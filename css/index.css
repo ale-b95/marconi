@@ -1,3 +1,12 @@
-#bigOne {
-  color: red;
+html {
+  font-family: sans-serif;
+  font-size: 100%;
+}
+
+label {
+  display: block;
+}
+
+button {
+  font-size: 150%;
 }
