@@ -10,3 +10,18 @@ label {
 button {
   font-size: 150%;
 }
+
+div {
+  width: 28%;
+  display: block;
+  float: left;
+  border: solid 2px lightgrey;
+  padding: 2%;
+  margin: 1%;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
