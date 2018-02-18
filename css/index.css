@@ -8,11 +8,11 @@ label {
 }
 
 button {
-  font-size: 150%;
+  font-size: 110%;
 }
 
 div {
-  width: 28%;
+  max-width: 28%;
   display: block;
   float: left;
   border: solid 2px lightgrey;

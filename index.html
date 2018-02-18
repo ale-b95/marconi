@@ -11,18 +11,29 @@
       <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
 
       <link rel="stylesheet" type="text/css" href="css/index.css" />
-      <title>Hello World</title>
+      <title>Marconi</title>
   </head>
   <body>
-    <div id="add_prof">
-      <h2>Inserisci Docente</h2>
-      <form id="add_prof_form">
-          <label>Nome:<br/><input id="add_prof_name" type="text"></label><br/>
-          <label>Cognome:<br/><input id="add_prof_surname" type="text"></label><br/>
-          <label>Password:<br/><input id="add_prof_pwd" type="password"></label><br/>
-          <label>Ripeti password:<br/><input id="add_prof_pwd_r" type="password"></label><br/>
-          <label>Admin:<input id="add_prof_admin" type="checkbox"></label><br/>
-        <button id="add_prof_button" type="button">Invio</button>
+    <div id="signup">
+      <h2>SignUp</h2>
+      <form id="signup_form">
+          <label><input id="sUpName" type="text" placeholder="name"></label><br/>
+          <label><input id="sUpSurname" type="text" placeholder="surname"></label><br/>
+          <label><input id="sUpEmail" type="email" placeholder="email"></label><br/>
+          <label><input id="sUpPwd" type="password" placeholder="password"></label><br/>
+          <label><input id="sUpPwdRep" type="password" placeholder="repeate password"></label><br/>
+          <!--<label>Admin:<input id="add_prof_admin" type="checkbox"></label><br/>-->
+        <button id="signup_button" type="button">Sign Up</button>
+      </form>
+    </div>
+
+    <div id="login">
+      <h2>Log In</h2>
+      <form id="login_form">
+        <label><input id="lInEmail" type="email" placeholder="email"></label><br/>
+        <label><input id="lInPwd" type="password" placeholder="password"></label><br/>
+        <button id="login_button" type="button">Log In</button>
+        <button id="logout_button" type="button">Log Out</button>
       </form>
     </div>
 
@@ -31,11 +42,11 @@
       <ul id="prof_list"></ul>
     </div>
 
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/phonegapConfig.js"></script>
+    <!--<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/phonegapConfig.js"></script>-->
     <script type="text/javascript" src="js/firebaseConfig.js"></script>
 
-    <script type="text/javascript">app.initialize();</script>
+    <!--<script type="text/javascript">app.initialize();</script>-->
     <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>
