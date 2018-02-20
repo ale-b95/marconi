@@ -1,13 +1,37 @@
 $(function() {
+
   const btnSignup = $("#signup_button");
   const btnLogin = $("#login_button");
   const btnLogout = $("#logout_button");
 
-//------------------------------------------------------------------------------Sign Up
+  var instituteName = null;
+  var instituteId = null;
+
+  btnLogin.on('click', e => {
+    logOut();
+    userLogin();
+  });
+
   btnSignup.on('click', e => {
+    logOut();
     registerNewUser();
   });
 
+  btnLogout.on('click', e => {
+    logOut();
+  });
+//------------------------------------------------------------------------------Auth state
+  firebase.auth().onAuthStateChanged(firebaseUser => {
+    if (firebaseUser) {
+      //console.log(firebaseUser);
+      console.log('logged in');
+    } else {
+      console.log('not logged in');
+    }
+  });
+
+//------------------------------------------------------------------------------Sign Up
+// creates a new user and updates its displayName
   function registerNewUser() {
     const formSignup = $('#signup_form')[0];
     const txtName = $("#sUpName")[0];
@@ -24,22 +48,20 @@ $(function() {
       // Sign up
       firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(() => {
+        // Set a displayName for the user
         firebase.auth().currentUser.updateProfile({
           displayName: dispName
-        }).then(console.log('update successful')).catch(updateUser => console.log('user not updated ' + updateUser.message))
+        }).catch(updateUser => console.log('user not updated ' + updateUser.message))
       }).catch(createUser => console.log('error during user creation ' + createUser.message));
       formSignup.reset();
     } else {
       //TODO check password
       $(this).closest('form').find("input[type=password]").val("");
     }
+    logOut();
   }
 
 //------------------------------------------------------------------------------Log In
-  btnLogin.on('click', e => {
-    userLogin();
-  });
-
   function userLogin() {
     const txtInstituteLogin = $("#lInInstitute")[0];
     const txtEmailLogin = $("#lInEmail")[0];
@@ -50,8 +72,9 @@ $(function() {
     const pwd = txtPwdLogin.value;
 
     // Check if institute exists
-    firebase.database().ref(institute).once('value').then(snap => {
+    firebase.database().ref(institute).once('value', snap => {
       if (snap.exists()) {
+        setGlobalInstituteNameAndId(institute);
         // Log in
         firebase.auth().signInWithEmailAndPassword(email, pwd)
         .then(() => {
@@ -59,22 +82,28 @@ $(function() {
           firebase.database().ref().child(institute +'/users')
           .orderByChild('email').equalTo(email).once('value', snap => {
             const data = snap.val();
-            console.log('checking data');
             if (data) {
-              console.log('element found');
             } else {
         // If not add it
-              console.log('element not found: insert element');
+              console.log('first login with this institute: add user to the institute');
               var user = firebase.auth().currentUser;
               writeUserData(institute, user.displayName, email, false, user.uid, 'true');
             }
           });
-          showUserList ();
+          showUserList (instituteName, instituteId);
         })
         .catch(e => console.log(e.message));
       } else {
         alert('wrong institute');
       }
+    });
+  }
+
+  function setGlobalInstituteNameAndId(institute) {
+    instituteId = institute;
+    firebase.database().ref( institute + '/institute name').once('value', snap => {
+      instituteName = snap.val();
+      $('#topHeader').text('Institute: ' + instituteName);
     });
   }
 
@@ -89,46 +118,42 @@ $(function() {
     });
   }
 
-
-//------------------------------------------------------------------------------Log Out
-  btnLogout.on('click', e => {
-    firebase.auth().signOut();
-  });
-
-//------------------------------------------------------------------------------Auth state
-  firebase.auth().onAuthStateChanged(firebaseUser => {
-    if (firebaseUser) {
-      console.log(firebaseUser);
-
-    } else {
-      console.log('not logged in');
-    }
-  });
-
 //------------------------------------------------------------------------------User insertion in database
-  function showUserList (institute) {
-    alert('ok1');
-    const dbRef_doc = firebase.database().ref().child(institute + '/users').orderByKey();
-    alert('ok2');
-    dbRef_doc.on('value', snap => {
-      $("#user_list").append("<ul id='"+snap.key+"'>Id: "+snap.key+"</ul><br/>");
-      snap.forEach(childSnap => {
-        var key = childSnap.key;
-        var childData = childSnap.val();
-        if (key == "name") {
-          $("#"+snap.key+"").append("<li>Name: "+childData+"</li>");
-        } else if (key == "email") {
-          $("#"+snap.key+"").append("<li>Email: "+childData+"</li>");
-        } else if (key == "admin") {
-          $("#"+snap.key+"").append("<li>Admin: "+childData+"</li>");
-        }
+  function showUserList (instituteName, instituteId) {
+    if (instituteName && instituteId) {
+      $("#showUserHeader").text('Show '+ instituteName + ' users');
+      const dbRef_doc = firebase.database().ref().child(instituteId + '/users').orderByKey();
+      dbRef_doc.once('value', snap => {
+        snap.forEach(childSnap => {
+          $("#user_list").append("<ul id='"+childSnap.key+"'>Id: "+childSnap.key);
+          childSnap.forEach(grandChildSnap => {
+            var key = grandChildSnap.key;
+            var childData = grandChildSnap.val();
+            if (key == "name") {
+              $("#"+childSnap.key+"").append("<li>Nome: "+childData+"</li>");
+            } else if (key == "email") {
+              $("#"+childSnap.key+"").append("<li>Cognome: "+childData+"</li>");
+            } else if (key == "admin") {
+              $("#"+childSnap.key+"").append("<li>Admin: "+childData+"</li>");
+            }
+          });
+          $("#user_list").append("</ul><br/>");
+        });
       });
-    });
+    }
   }
+
+  function logOut() {
+    firebase.auth().signOut();
+    $("#user_list").empty();
+    $("#showUserHeader").text('Not logged');
+    $('#topHeader').text('Not logged');
+
+    instituteId = null;
+    instituteName = null;
+  }
+
 //------------------------------------------------------------------------------insert and get data from fatabase
-
-
-
   /*
   function writeData(data) {
     var dbRef = firebase.database().ref().child('dataNode').push().set({

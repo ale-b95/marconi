@@ -14,6 +14,9 @@
       <title>Marconi</title>
   </head>
   <body>
+    <header>
+      <h1 id="topHeader"></h1>
+    </header>
     <div id="signup">
       <h2>SignUp</h2>
       <form id="signup_form">
@@ -30,16 +33,16 @@
     <div id="login">
       <h2>Log In</h2>
       <form id="login_form">
-        <label><input id="lInInstitute" type="text" placeholder="institute"></label><br/>
-        <label><input id="lInEmail" type="email" placeholder="email"></label><br/>
-        <label><input id="lInPwd" type="password" placeholder="password"></label><br/>
+        <label><input id="lInInstitute" type="text" placeholder="institute" value="institute-id"></label><br/>
+        <label><input id="lInEmail" type="email" placeholder="email" value="ale.b413@gmail.com"></label><br/>
+        <label><input id="lInPwd" type="password" placeholder="password" value="ale12345"></label><br/>
         <button id="login_button" type="button">Log In</button>
         <button id="logout_button" type="button">Log Out</button>
       </form>
     </div>
 
     <div id="read_user_data">
-      <h2>Visualizza Docenti</h2>
+      <h2 id="showUserHeader">Not logged</h2>
       <ul id="user_list"></ul>
     </div>
 
