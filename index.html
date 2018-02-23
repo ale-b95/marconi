@@ -12,59 +12,64 @@
       <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
 
       <link href="css/bootstrap.min.css" rel="stylesheet">
-      <!--<link rel="stylesheet" type="text/css" href="../css/index.css"/>-->
       <link rel="stylesheet" type="text/css" href="css/login.css"/>
 
       <title>Marconi</title>
   </head>
+
   <body>
+      <div id="login" class="index collapse">
+        <h1 class="h3 mb-3 font-weight-normal">Log In</h1>
+        <form id="form-login">
+          <input id="lInEmail" class="form-control" type="email" placeholder="email">
+          <input id="lInPwd" class="form-control" type="password" placeholder="password">
 
-    <div class="container text-center d-flex justify-content-center">
-      <div class="row flex-row">
-        <div class="col-xs-12" id="login">
-          <div class="jumbotron">
-            <h2>Log In</h2>
-            <form id="login_form">
-              <label><input id="lInInstitute" type="text" placeholder="institute" value="institute-id"></label><br/>
-              <label><input id="lInEmail" type="email" placeholder="email"></label><br/>
-              <label><input id="lInPwd" type="password" placeholder="password"></label><br/>
-              <button class="btn btn-primary" id="login_button" type="button">Log In</button>
-              <button class="btn btn-primary collapse" id="logout_button" type="button">Log Out</button>
-              <a class="btn btn-link" id="login_link">SignUp</a>
-            </form>
-          </div>
-        </div>
-
-        <div class="col-xs-12 collapse" id="signup">
-          <div class="jumbotron">
-            <h2>SignUp</h2>
-            <form id="signup_form">
-              <label><input id="sUpName" type="text" placeholder="name"></label><br/>
-              <label><input id="sUpSurname" type="text" placeholder="surname"></label><br/>
-              <label><input id="sUpEmail" type="email" placeholder="email"></label><br/>
-              <label><input id="sUpPwd" type="password" placeholder="password"></label><br/>
-              <label><input id="sUpPwdRep" type="password" placeholder="repeate password"></label><br/>
-              <button class="btn btn-primary" id="signup_button" type="button">Sign Up</button>
-              <a class="btn btn-link" id="signup_link">LogIn</a>
-            </form>
-          </div>
-        </div>
+          <button class="btn btn-primary btn-lg btn-block" id="login_button" type="button">Log In</button>
+          <a class="btn btn-link btn-lg btn-block" id="signup_link">SignUp</a>
+        </form>
       </div>
-    </div>
 
-    <div class="alert alert-danger collapse" id="alert_msg">
-      <button type="button" class="close" id="close_alert_msg" >&times;</button>
-      <span>
-        <strong>ERROR!</strong>
-      </span>
-    </div>
+      <div id="signup" class="collapse index">
+        <h1 class="h3 mb-3 font-weight-normal">SignUp</h1>
+        <form id="form-signup">
+          <input id="sUpName" class="form-control" type="text" placeholder="name">
+          <input id="sUpSurname" class="form-control" type="text" placeholder="surname">
+          <input id="sUpEmail"  class="form-control"type="email" placeholder="email">
+          <input id="sUpPwd" class="form-control" type="password" placeholder="password">
+          <input id="sUpPwdRep" class="form-control" type="password" placeholder="repeate password">
+
+          <button class="btn btn-lg btn-block btn-primary" id="signup_button" type="button">Sign Up</button>
+          <a class="btn btn-link btn-lg btn-block login_link">LogIn</a>
+        </form>
+      </div>
+
+      <div id="user_page" class="collapse">
+        <h1 class="h3 mb-3 font-weight-normal">Home</h1>
+          <br/>
+          <button class="btn btn-lg btn-block btn-primary" id="log_institute_button" type="button">Log Institute</button>
+          <button class="btn btn-lg btn-block btn-primary" id="new_institute_button" type="button">New Institute</button>
+          <button class="btn btn-lg btn-block btn-primary" id="logout_button" type="button">Log Out</button>
+      </div>
 
 
+      <div id="new_institute" class="collapse">
+        <h1 class="h3 mb-3 font-weight-normal">New Institute</h1>
+        <form id="form-create-institute">
+          <input id="nInstInstName" class="form-control" type="text" placeholder="institute name">
+          <button class="btn btn-primary btn-lg btn-block" id="create_institute_button" type="button">Create</button>
+          <button class="btn btn-primary btn-lg btn-block" id="fromNItoUP" type="button">Back</button>
+        </form>
+      </div>
+
+<!--
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/phonegapConfig.js"></script>
-    <script type="text/javascript" src="js/firebaseConfig.js"></script>
     <script type="text/javascript">app.initialize();</script>
+-->
+
+    <script type="text/javascript" src="js/firebaseConfig.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/homepage.js"></script>
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>

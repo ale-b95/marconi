@@ -1,32 +1,28 @@
 $(function () {
-
-  var instituteName = null;
-  var instituteId = null;
-
-  $("#signup").hide();
-
-  $("#login_link").on('click',() => {
+  $("#signup_link").on('click',() => {
     $("#login").hide();
     $("#signup").show();
   });
 
-  $("#signup_link").on('click',() => {
+  $(".login_link").on('click',() => {
     $("#signup").hide();
     $("#login").show();
   });
 
   $("#login_button").on('click', () => {
-    logOut();
+    //logOut();
     userLogin();
   });
 
   $("#signup_button").on('click', () => {
-    logOut();
+    //logOut();
     registerNewUser();
   });
 
   $("#logout_button").on('click', () => {
     logOut();
+    $("#user_page").hide();
+    $("#login").show();
   });
 
   $("#close_alert_msg").on('click', () => {
@@ -36,10 +32,13 @@ $(function () {
 //------------------------------------------------------------------------------Auth state
   firebase.auth().onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
-      //console.log(firebaseUser);
+      console.log(firebaseUser);
       console.log('logged in');
+      $("#login").hide();
+      $("#user_page").show();
     } else {
       console.log('not logged in');
+      $("#login").show();
     }
   });
 
@@ -50,126 +49,48 @@ $(function () {
     const txtName = $("#sUpName")[0];
     const txtSurname = $("#sUpSurname")[0];
     const txtEmailSignup = $("#sUpEmail")[0];
-    const txtPwdSignup = $("#sUpPwd")[0];
-    const txtPwdSignupRep = $("#sUpPwdRep")[0];
+    const txtPswd = $("#sUpPwd")[0];
+    const txtPswdRep = $("#sUpPwdRep")[0];
 
-    if (txtPwdSignup.value == txtPwdSignupRep.value) {
-      // Get email and password
-      const email = txtEmailSignup.value;
-      const password = txtPwdSignup.value;
+    if (txtPswd.value == txtPswdRep.value) {
+// Get email and password
       var dispName = txtName.value + " " + txtSurname.value;
-      // Sign up
-      firebase.auth().createUserWithEmailAndPassword(email, password)
+// Sign up
+      firebase.auth().createUserWithEmailAndPassword(txtEmailSignup.value, txtPswd.value)
       .then(() => {
-        // Set a displayName for the user
+// Set a displayName for the user
         firebase.auth().currentUser.updateProfile({
           displayName: dispName
-        }).catch(updateUser => console.log('user not updated ' + updateUser.message))
-      }).catch(createUser => console.log('error during user creation ' + createUser.message));
-      formSignup.reset();
+        })
+        .catch(updateUser => console.log('user not updated ' + updateUser.message))
+      })
+      .then(() => {
+        $("#signup").hide();
+        $("#user_page").show();
+      })
+      .catch(createUser => console.log('error during user creation ' + createUser.message));
     } else {
       //TODO check password
       $(this).closest('form').find("input[type=password]").val("");
     }
-    logOut();
   }
 
 //------------------------------------------------------------------------------Log In
   function userLogin() {
-    const txtInstituteLogin = $("#lInInstitute")[0];
     const txtEmailLogin = $("#lInEmail")[0];
     const txtPwdLogin = $("#lInPwd")[0];
 
-    const institute = txtInstituteLogin.value;
     const email = txtEmailLogin.value;
     const pwd = txtPwdLogin.value;
 
-    // Check if institute exists
-    firebase.database().ref(institute).once('value', snap => {
-      if (snap.exists()) {
-        // Log in
-        firebase.auth().signInWithEmailAndPassword(email, pwd)
-        .then(() => {
-          setGlobalInstituteNameAndId(institute);
-        // Check if user already exists in institute
-          firebase.database().ref().child(institute +'/users')
-          .orderByChild('email').equalTo(email).once('value', snap => {
-            const data = snap.val();
-            if (data) {
-            } else {
-        // If not add it
-              console.log('first login with this institute: add user to the institute');
-              var user = firebase.auth().currentUser;
-              writeUserData(institute, user.displayName, email, false, user.uid, 'true');
-            }
-          });
-          showUserList (instituteName, instituteId);
-        })
-        .catch(e => {
-          $("#alert_msg span").text(e.message);
-          $("#alert_msg").show();
-          console.log(e.message)
-        });
-      } else {
-        $("#alert_msg span").text('Wrong institute');
-        $("#alert_msg").show();
-      }
-    });
+    firebase.auth().signInWithEmailAndPassword(email, pwd).then(() =>{
+      $("#login").hide();
+      $("#user_page").show();
+    }).catch(e => console.log('login error: ' + e.message));
   }
 
-  function setGlobalInstituteNameAndId(institute) {
-    instituteId = institute;
-    firebase.database().ref( institute + '/institute name').once('value', snap => {
-      instituteName = snap.val();
-      $('#topHeader').text('Institute: ' + instituteName);
-    });
-  }
-
-  function writeUserData(institute, displayName, email, admin, uid, verified) {
-    console.log('write user data');
-    firebase.database().ref().child('institute-id/users').push().set({
-      name: displayName,
-      email: email,
-      admin: admin,
-      uid: uid,
-      verified: verified
-    });
-  }
-
-//------------------------------------------------------------------------------User insertion in database
-  function showUserList (instituteName, instituteId) {
-    if (instituteName && instituteId) {
-      $("#showUserHeader").text('Show '+ instituteName + ' users');
-      const dbRef_doc = firebase.database().ref().child(instituteId + '/users').orderByKey();
-      dbRef_doc.once('value', snap => {
-        snap.forEach(childSnap => {
-          $("#user_list").append("<ul id='"+childSnap.key+"'>Id: "+childSnap.key);
-          childSnap.forEach(grandChildSnap => {
-            var key = grandChildSnap.key;
-            var childData = grandChildSnap.val();
-            if (key == "name") {
-              $("#"+childSnap.key+"").append("<li>Nome: "+childData+"</li>");
-            } else if (key == "email") {
-              $("#"+childSnap.key+"").append("<li>Cognome: "+childData+"</li>");
-            } else if (key == "admin") {
-              $("#"+childSnap.key+"").append("<li>Admin: "+childData+"</li>");
-            }
-          });
-          $("#user_list").append("</ul><br/>");
-        });
-      });
-    }
-  }
-
+//------------------------------------------------------------------------------Log Out
   function logOut() {
-    if (instituteId && instituteName) {
-      firebase.auth().signOut();
-      $("#user_list").empty();
-      $("#showUserHeader").text('Not logged');
-      $('#topHeader').text('Not logged');
-
-      instituteId = null;
-      instituteName = null;
-    }
+    firebase.auth().signOut();
   }
 });
