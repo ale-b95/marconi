@@ -44,8 +44,6 @@
       </div>
 
       <div id="user_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Home</h1>
-          <br/>
           <button class="btn btn-lg btn-block btn-primary" id="log_institute_button" type="button">Log Institute</button>
           <button class="btn btn-lg btn-block btn-primary" id="new_institute_button" type="button">New Institute</button>
           <button class="btn btn-lg btn-block btn-primary" id="logout_button" type="button">Log Out</button>
@@ -61,6 +59,27 @@
         </form>
       </div>
 
+      <div id="log_institute" class="collapse">
+        <form id="form-log-institute">
+          <div class="form-group">
+           <select class="form-control" id="select_institute">
+             <option selected>Select Institute</option>
+             <optgroup label="My Institutes">
+               <option>1</option>
+               <option>2</option>
+             </optgroup>
+             <optgroup label="Other Institutes">
+               <option>3</option>
+               <option>4</option>
+             </optgroup>
+           </select>
+          </div>
+            <button class="btn btn-primary btn-lg btn-block" id="choose_inst" type="button">Log Institute</button>
+            <button class="btn btn-primary btn-lg btn-block" id="fromLItoUP" type="button">Back</button>
+        </form>
+
+      </div>
+
 <!--
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/phonegapConfig.js"></script>
@@ -70,6 +89,7 @@
     <script type="text/javascript" src="js/firebaseConfig.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/homepage.js"></script>
+    <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>

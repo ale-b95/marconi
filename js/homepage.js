@@ -5,32 +5,54 @@ $(function () {
     $("#new_institute").show();
   });
 
+  $("#fromNItoUP").on('click', () => {
+    $("#new_institute").hide();
+    $("#user_page").show();
+  })
+
   $("#create_institute_button").on('click', () => {
     createInstitute();
+  })
+
+  $("#log_institute_button").on('click', () => {
+    $("#user_page").hide();
+    $("#log_institute").show();
+    getInstituteList();
+  })
+
+  $("#fromLItoUP").on('click', () => {
+    $("#log_institute").hide();
+    $("#user_page").show();
   })
 
   function createInstitute() {
     const institute_name = $("#nInstInstName")[0].value;
     const auth = firebase.auth();
+    const ref = firebase.database().ref();
 
-    const REF = firebase.database().ref();
-    const INST = firebase.database().ref('institutes');
-    const GU = firebase.database().ref('global_users');
-
-    var inst_ref = INST.push().set({
+    var inst_ref = ref.child('institute').push({
       name: institute_name
-    }).then(snap => {
-      const inst_id = snap.key
     });
 
-    INST.child('users/'+ auth.currentUser.uid).set({
-      name: auth.currentUser.displayName,
-      email: auth.currentUser.email
-    })
+    var inst_id = inst_ref.key;
 
-    REF.child('users/'+ auth.currentUser.uid).set({
-      [inst_id] : [institute_name]
-    })
+    ref.child('institute/' + inst_id + '/user/'+ auth.currentUser.uid).set({
+      name: auth.currentUser.displayName
+    });
+
+    ref.child('user/'+ auth.currentUser.uid +'/institute').update({
+      [inst_id] : institute_name
+    });
+
+    $("#new_institute").hide();
+    $("#user_page").show();
   }
+
+  function getInstituteList() {
+    const dbRef = firebase.database().ref();
+  }
+
+
+
 
 });

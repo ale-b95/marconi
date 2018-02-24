@@ -67,6 +67,16 @@ $(function () {
       .then(() => {
         $("#signup").hide();
         $("#user_page").show();
+
+        var user = firebase.auth().currentUser;
+
+        var dbRef = firebase.database().ref();
+
+        dbRef.child('user/'+user.uid).set({
+          name: txtName.value,
+          surname: txtSurname.value,
+          email: user.email
+        }).catch(ops => console.log('ERROR '+ops.message));
       })
       .catch(createUser => console.log('error during user creation ' + createUser.message));
     } else {
