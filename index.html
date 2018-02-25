@@ -12,7 +12,7 @@
       <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
 
       <link href="css/bootstrap.min.css" rel="stylesheet">
-      <link rel="stylesheet" type="text/css" href="css/login.css"/>
+      <link rel="stylesheet" type="text/css" href="css/index.css"/>
 
       <title>Marconi</title>
   </head>
@@ -61,16 +61,12 @@
 
       <div id="log_institute" class="collapse">
         <form id="form-log-institute">
-          <div class="form-group">
+          <div class="form-group form-group-lg">
            <select class="form-control" id="select_institute">
              <option selected>Select Institute</option>
-             <optgroup label="My Institutes">
-               <option>1</option>
-               <option>2</option>
+             <optgroup label="My Institutes" id="my_institutes">
              </optgroup>
-             <optgroup label="Other Institutes">
-               <option>3</option>
-               <option>4</option>
+             <optgroup label="All Institutes" id="all_institutes">
              </optgroup>
            </select>
           </div>
