@@ -1,46 +1,83 @@
 $(function () {
+  var current_page = null;
+  function showPage(page) {
+    if (current_page != null){
+      current_page.hide();
+    }
+
+    current_page = page;
+    current_page.show();
+  }
+
   $("#signup_link").on('click',() => {
-    $("#login").hide();
-    $("#signup").show();
+    showPage($("#signup"));
   });
 
-  $(".login_link").on('click',() => {
-    $("#signup").hide();
-    $("#login").show();
+  $(".login_page_btn").on('click',() => {
+    showPage($("#login"));
   });
+
+  $(".user_page_btn").on('click', () => {
+    showPage($("#user_page"));
+  })
 
   $("#login_button").on('click', () => {
-    //logOut();
     userLogin();
   });
 
   $("#signup_button").on('click', () => {
-    //logOut();
     registerNewUser();
   });
 
   $("#logout_button").on('click', () => {
     logOut();
-    $("#user_page").hide();
-    $("#login").show();
   });
 
-  $("#close_alert_msg").on('click', () => {
-    $("#alert_msg").hide();
-  })
+  $("#new_institute_button").on('click', () => {
+    showPage($("#new_institute"));
+  });
+
+  $("#create_institute_button").on('click', () => {
+    createInstitute();
+  });
+
+  $("#log_institute_button").on('click', () => {
+    getInstituteList();
+    showPage($("#log_institute"));
+  });
+
+  $("#choose_inst").on('click', () => {
+    logOnInstitute();
+  });
+
 
 //------------------------------------------------------------------------------Auth state
   firebase.auth().onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
       console.log(firebaseUser);
       console.log('logged in');
-      $("#login").hide();
-      $("#user_page").show();
+
+      logDefaultInstitute();
     } else {
       console.log('not logged in');
-      $("#login").show();
+      showPage($("#login"));
     }
   });
+
+  function logDefaultInstitute() {
+    const dbRef = firebase.database().ref();
+
+    var user = firebase.auth().currentUser;
+    var ref = dbRef.child('user/' + user.uid + '/default_institute');
+
+    ref.once('value', snap => {
+      if (snap.val() != null) {
+        showPage($("#institute_page"));
+      } else {
+        showPage($("#user_page"));
+      }
+    });
+  }
 
 //------------------------------------------------------------------------------Sign Up
 // creates a new user and updates its displayName
@@ -53,20 +90,19 @@ $(function () {
     const txtPswdRep = $("#sUpPwdRep")[0];
 
     if (txtPswd.value == txtPswdRep.value) {
-// Get email and password
+      // Get email and password
       var dispName = txtName.value + " " + txtSurname.value;
-// Sign up
+      // Sign up
       firebase.auth().createUserWithEmailAndPassword(txtEmailSignup.value, txtPswd.value)
       .then(() => {
-// Set a displayName for the user
+        // Set a displayName for the user
         firebase.auth().currentUser.updateProfile({
           displayName: dispName
         })
         .catch(updateUser => console.log('user not updated ' + updateUser.message))
       })
       .then(() => {
-        $("#signup").hide();
-        $("#user_page").show();
+        showPage($("#user_page"));
 
         var user = firebase.auth().currentUser;
 
@@ -94,13 +130,116 @@ $(function () {
     const pwd = txtPwdLogin.value;
 
     firebase.auth().signInWithEmailAndPassword(email, pwd).then(() =>{
-      $("#login").hide();
-      $("#user_page").show();
+      logDefaultInstitute();
     }).catch(e => console.log('login error: ' + e.message));
   }
 
 //------------------------------------------------------------------------------Log Out
   function logOut() {
     firebase.auth().signOut();
+    showPage($("#login"));
   }
+
+  function createInstitute() {
+    const institute_name = $("#nInstInstName")[0].value;
+    const user = firebase.auth().currentUser;
+    const ref = firebase.database().ref();
+    if (institute_name.length >= 6 ) {
+      var inst_ref = ref.child('institute').push({
+        name: institute_name
+      });
+
+      var inst_id = inst_ref.key;
+
+      ref.child('institute/' + inst_id + '/user/'+ user.uid).set({
+        name: user.displayName,
+        admin: true,
+        confirmed: true
+      });
+
+      ref.child('user/'+ user.uid +'/institute').update({
+        [inst_id] : institute_name
+      });
+
+      ref.child('user/'+ user.uid).update({
+        default_institute : inst_ref.key
+      });
+
+      showPage($("#institute_page"));
+    } else {
+      alert('Insert institute name');
+    }
+  }
+
+//TODO trovare modo per caricare più velocemente
+  function getInstituteList() {
+    $("#my_institutes").empty();
+    $("#all_institutes").empty();
+
+    const user = firebase.auth().currentUser;
+    const dbRef = firebase.database().ref();
+
+    var user_inst = dbRef.child('user/'+ user.uid + '/institute/').orderByKey();
+    user_inst.once('value', snap => {
+      snap.forEach(childSnap => {
+        var name = childSnap.val();
+        var key = childSnap.key;
+        $("#my_institutes").append('<option value="'+ key +'">'+ name +'</option>');
+      });
+    });
+
+    var global_inst = dbRef.child('institute/').orderByKey();
+    global_inst.once('value', snap => {
+      snap.forEach(childSnap => {
+        var name = childSnap.child('name').val();
+        var key = childSnap.key;
+        $("#all_institutes").append('<option value="'+ key +'">'+ name +'</option>');
+      });
+    });
+  }
+
+  function logOnInstitute() {
+      var auth_user;
+      var inst_id = $("#select_institute").val();
+      var inst_name = $("#select_institute").find(':selected').text();
+
+      if (inst_name != 'Select Institute') {
+        const user = firebase.auth().currentUser;
+        const dbRef = firebase.database().ref();
+
+        var confirmed = false;
+
+        // add institute to user
+        dbRef.child('user/' + user.uid + '/institute/').update({
+          [inst_id] : inst_name
+        });
+
+        // add user to institute
+        dbRef.child('institute/' + inst_id + '/user/' + user.uid).update({
+          name: user.displayName
+        });
+
+        // check if authorized user
+        dbRef.child('institute/' + inst_id + '/user/' + user.uid).once('value',snap => {
+          snap.forEach(childSnap => {
+            if (childSnap.key == 'confirmed' && childSnap.val() == true) {
+              confirmed = true;
+            }
+          });
+
+          dbRef.child('user/' + user.uid).update({
+            default_institute : inst_id
+          });
+
+          if (confirmed) {
+            showPage($("#institute_page"));
+          } else {
+            showPage($("#user_page"));
+            alert("Waiting Confirmation")
+          }
+        });
+      } else {
+        alert('Select an institute');
+      }
+    }
 });
