@@ -20,65 +20,70 @@
   <body>
       <div id="login" class="index collapse">
         <h1 class="h3 mb-3 font-weight-normal">Log In</h1>
-        <form id="form-login">
-          <input id="lInEmail" class="form-control" type="email" placeholder="email">
-          <input id="lInPwd" class="form-control" type="password" placeholder="password">
-
-          <button class="btn btn-primary btn-lg btn-block" id="login_button" type="button">Log In</button>
-          <a class="btn btn-link btn-lg btn-block" id="signup_link">SignUp</a>
-        </form>
+        <input id="lInEmail" class="form-control" type="email" placeholder="email">
+        <input id="lInPwd" class="form-control" type="password" placeholder="password">
+        <button class="btn btn-primary btn-lg" id="login_button" type="button">Log In</button>
+        <a class="btn btn-link btn-lg" id="signup_link">SignUp</a>
       </div>
 
       <div id="signup" class="collapse index">
         <h1 class="h3 mb-3 font-weight-normal">SignUp</h1>
-        <form id="form-signup">
-          <input id="sUpName" class="form-control" type="text" placeholder="name">
-          <input id="sUpSurname" class="form-control" type="text" placeholder="surname">
-          <input id="sUpEmail"  class="form-control"type="email" placeholder="email">
-          <input id="sUpPwd" class="form-control" type="password" placeholder="password">
-          <input id="sUpPwdRep" class="form-control" type="password" placeholder="repeate password">
-
-          <button class="btn btn-lg btn-block btn-primary" id="signup_button" type="button">Sign Up</button>
-          <a class="btn btn-link btn-lg btn-block login_pahe_btn">LogIn</a>
-        </form>
+        <input id="sUpName" class="form-control" type="text" placeholder="name">
+        <input id="sUpSurname" class="form-control" type="text" placeholder="surname">
+        <input id="sUpEmail"  class="form-control"type="email" placeholder="email">
+        <input id="sUpPwd" class="form-control" type="password" placeholder="password">
+        <input id="sUpPwdRep" class="form-control" type="password" placeholder="repeate password">
+        <button class="btn btn-lg btn-primary" id="signup_button" type="button">Sign Up</button>
+        <a class="btn btn-link btn-lg login_page_btn">LogIn</a>
       </div>
 
       <div id="user_page" class="collapse">
         <p id="user_info">User: </p>
-          <button class="btn btn-lg btn-block btn-primary" id="log_institute_button" type="button">Log Institute</button>
-          <button class="btn btn-lg btn-block btn-primary" id="new_institute_button" type="button">New Institute</button>
-          <button class="btn btn-lg btn-block btn-primary" id="logout_button" type="button">Log Out</button>
+        <button class="btn btn-lg btn-primary" id="log_institute_button" type="button">Log Institute</button>
+        <button class="btn btn-lg btn-primary" id="new_institute_button" type="button">New Institute</button>
+        <button class="btn btn-lg btn-primary" id="logout_button" type="button">Log Out</button>
       </div>
 
 
       <div id="new_institute" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">New Institute</h1>
-        <form id="form-create-institute">
-          <input id="nInstInstName" class="form-control" type="text" placeholder="institute name">
-          <button class="btn btn-primary btn-lg btn-block" id="create_institute_button" type="button">Create</button>
-          <button class="btn btn-primary btn-lg btn-block user_page_btn" id="fromNItoUP" type="button">Back</button>
-        </form>
+        <input id="nInstInstName" class="form-control" type="text" placeholder="institute name">
+        <button class="btn btn-primary btn-lg" id="create_institute_button" type="button">Create</button>
+        <button class="btn btn-primary btn-lg user_page_btn" type="button">Back</button>
       </div>
 
-      <div id="log_institute" class="collapse">
-        <form id="form-log-institute">
-          <div class="form-group form-group-lg">
-           <select class="form-control" id="select_institute">
-             <option selected>Select Institute</option>
-             <optgroup label="My Institutes" id="my_institutes">
-             </optgroup>
-             <optgroup label="All Institutes" id="all_institutes">
-             </optgroup>
-           </select>
-          </div>
-            <button class="btn btn-primary btn-lg btn-block" id="choose_inst" type="button">Log Institute</button>
-            <button class="btn btn-primary btn-lg btn-block user_page_btn" id="fromLItoUP" type="button">Back</button>
-        </form>
+      <div id="log_institute" class="collapse center-block">
+       <select class="form-control" id="select_institute">
+         <option selected>Select Institute</option>
+         <optgroup label="My Institutes" id="my_institutes">
+         </optgroup>
+         <optgroup label="All Institutes" id="all_institutes">
+         </optgroup>
+       </select>
+       <br/>
+        <button class="btn btn-primary btn-lg" id="choose_inst" type="button">Log Institute</button>
+        <button class="btn btn-primary btn-lg user_page_btn" id="fromLItoUP" type="button">Back</button>
       </div>
 
       <div id="institute_page" class="collapse">
-        <h1 id="institute_name_heander" class="h3 mb-3 font-weight-normal"></h1>
-        <button class="btn btn-primary btn-lg btn-block user_page_btn" type="button">User Page</button>
+        <p id="institute_info"></p>
+        <button id="admin_btn" class="btn btn-primary btn-lg collapse" type="button">Administration</button>
+        <button class="btn btn-primary btn-lg user_page_btn" type="button">Back</button>
+      </div>
+
+      <div id="administration_page" class="collapse">
+        <table id="user_table" class="table table-stripped table-fixed table-sm">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Enable</th>
+              <th>Admin</th>
+            </tr>
+          </thead>
+          <tbody id="user_table_body">
+          </tbody>
+        </table>
+        <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
 
 <!--
