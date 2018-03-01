@@ -86,6 +86,21 @@
         <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
 
+<!-- SCRIPT --------------------------------------------------------------------------------------------------------------->
+      <script type='text/javascript' >
+        var INSTITUTE_ID = null;
+        var CURRENT_PAGE = null;
+
+        function showPage(page) {
+          if (CURRENT_PAGE != null){
+            CURRENT_PAGE.hide();
+          }
+
+          CURRENT_PAGE = page;
+          CURRENT_PAGE.show();
+        }
+      </script>
+
 <!--
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/phonegapConfig.js"></script>
@@ -94,6 +109,7 @@
 
     <script type="text/javascript" src="js/firebaseConfig.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
+
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
   </body>

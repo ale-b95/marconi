@@ -1,15 +1,4 @@
 $(function () {
-  var current_page = null;
-  var logged_institute_id = null;
-
-  function showPage(page) {
-    if (current_page != null){
-      current_page.hide();
-    }
-
-    current_page = page;
-    current_page.show();
-  }
 
   $("#signup_link").on('click',() => {
     showPage($("#signup"));
@@ -20,13 +9,11 @@ $(function () {
   });
 
   $(".user_page_btn").on('click', () => {
-    loadUserInfo();
-    showPage($("#user_page"));
+    goUserPage();
   });
 
   $(".institute_page_btn").on('click', () => {
-    loadInstituteInfo();
-    showPage($("#institute_page"));
+    goInstitutePage();
   });
 
   $("#login_button").on('click', () => {
@@ -63,7 +50,6 @@ $(function () {
     showPage($("#administration_page"));
   });
 
-//------------------------------------------------------------------------------Auth state
 /*
   called at every user state change (login / logout)
 */
@@ -78,8 +64,9 @@ $(function () {
     }
   });
 
-//------------------------------------------------------------------------------Sign Up
-// creates a new user and updates its displayName
+/*
+    creates a new user and updates its displayName
+*/
   function registerNewUser() {
     const formSignup = $('#signup_form')[0];
     const txtName = $("#sUpName")[0];
@@ -99,32 +86,26 @@ $(function () {
           displayName: dispName
         })
         .catch(updateUser => console.log('user not updated ' + updateUser.message))
-      })
-      .then(() => {
-        loadUserInfo();
-        showPage($("#user_page"));
+      }).then(() => {
+          const USER = firebase.auth().currentUser;
+          var dbRef = firebase.database().ref();
 
-        var user = firebase.auth().currentUser;
-
-        var dbRef = firebase.database().ref();
-
-        dbRef.child('user/' + user.uid + '/user_data').set({
-          name: txtName.value,
-          surname: txtSurname.value,
-          email: user.email
-        }).catch(ops => console.log('ERROR '+ops.message));
-      })
-      .catch(createUser => console.log('error during user creation ' + createUser.message));
+          dbRef.child('user/' + USER.uid + '/user_data').set({
+            name: txtName.value,
+            surname: txtSurname.value,
+            email: USER.email
+          }).catch(ops => console.log('ERROR '+ops.message));
+        goUserPage();
+      }).catch(createUser => console.log('error during user creation ' + createUser.message));
     } else {
       $(this).closest('form').find("input[type=password]").val("");
     }
   }
 
-//------------------------------------------------------------------------------Log In
 /*
   login with the user email and password, log into the default institute if
   it is se
-*/
+  */
   function userLogin() {
     const txtEmailLogin = $("#lInEmail")[0];
     const txtPwdLogin = $("#lInPwd")[0];
@@ -132,50 +113,51 @@ $(function () {
     const email = txtEmailLogin.value;
     const pwd = txtPwdLogin.value;
 
-    firebase.auth().signInWithEmailAndPassword(email, pwd).then(() =>{
-      logDefaultInstitute();
-    }).catch(e => console.log('login error: ' + e.message));
+    firebase.auth().signInWithEmailAndPassword(email, pwd)
+    .catch(e => console.log('login error: ' + e.message));
   }
 
-//------------------------------------------------------------------------------Log Out
   function logOut() {
     firebase.auth().signOut();
+    INSTITUTE_ID = null;
     showPage($("#login"));
   }
 
-//------------------------------------------------------------------------------Automatic institute access
   /*
     after user login
     automatically log in the default institute (last logged one)
     if presen
   */
   function logDefaultInstitute() {
+    const USER = firebase.auth().currentUser;
     /*
       get database and authentication reference to obtain user id and access to
       the "default institute" field of the user
     */
-    const user = firebase.auth().currentUser;
-    const ref = firebase.database().
-                ref().
-                child('user/' + user.uid + '/institute/default_institute');
+    const dbRef = firebase.database().ref();
+    const ref = dbRef.child('user/' + USER.uid + '/institute/default_institute');
 
     /*
       check if the "default institute" field is set
-      if it's set automatically log on the institute page
+      if it's set check if user is authorized,
+      if it is automatically log on the institute page
     */
     ref.once('value', snap => {
       if (snap.val() != null) {
-        logged_institute_id = snap.val();
-        loadInstituteInfo();
-        showPage($("#institute_page"));
+        INSTITUTE_ID = snap.val();
+        dbRef.child('institute/' + INSTITUTE_ID + '/user/' + USER.uid).once('value',snap => {
+          snap.forEach(childSnap => {
+            if (childSnap.key == 'confirmed' && childSnap.val() == true) {
+              goInstitutePage();
+            }
+          });
+        });
       } else {
-        loadUserInfo();
-        showPage($("#user_page"));
+        goUserPage();
       }
     });
   }
 
-//------------------------------------------------------------------------------Institute creation
   /*
     create a new institute in the db and set the user as admin
   */
@@ -185,7 +167,7 @@ $(function () {
       retrive database and user reference
     */
     const institute_name = $("#nInstInstName")[0].value;
-    const user = firebase.auth().currentUser;
+    const USER = firebase.auth().currentUser;
     const ref = firebase.database().ref();
     /*
       check if the institute name is valid
@@ -208,8 +190,8 @@ $(function () {
         add the user to the institute's user list, grant him access and
         admin privileges
       */
-      ref.child('institute/' + inst_id + '/user/'+ user.uid).set({
-        name: user.displayName,
+      ref.child('institute/' + inst_id + '/user/'+ USER.uid).set({
+        name: USER.displayName,
         admin: true,
         confirmed: true
       });
@@ -217,29 +199,31 @@ $(function () {
       /*
         add the institute to the user's institute list
       */
-      ref.child('user/'+ user.uid +'/institute').update({
+      ref.child('user/'+ USER.uid +'/institute').update({
         [inst_id] : institute_name
       });
 
       /*
         set the institute as default institute for the user
       */
-      ref.child('user/'+ user.uid + '/institute/').update({
+      ref.child('user/'+ USER.uid + '/institute/').update({
         default_institute : inst_ref.key
       });
 
       /*
+        set institute global variables
+      */
+      INSTITUTE_ID = inst_ref.key;
+
+      /*
         send the user to the institute page
       */
-      logged_institute_id = inst_ref.key;
-      loadInstituteInfo ();
-      showPage($("#institute_page"));
+      goInstitutePage();
     } else {
       alert('Insert institute name');
     }
   }
 
-//------------------------------------------------------------------------------Institute selection
   /*
     get the institutes name list allow the user to pick the one he wants to log
     on
@@ -251,13 +235,13 @@ $(function () {
     /*
       get database and user reference
     */
-    const user = firebase.auth().currentUser;
+    const USER = firebase.auth().currentUser;
     const dbRef = firebase.database().ref();
 
     /*
       retrive the list of the institutes known to the user
     */
-    var user_inst = dbRef.child('user/'+ user.uid + '/institute/').orderByKey();
+    var user_inst = dbRef.child('user/'+ USER.uid + '/institute/').orderByKey();
     user_inst.once('value', snap => {
       snap.forEach(childSnap => {
         var name = childSnap.val();
@@ -287,7 +271,6 @@ $(function () {
     });
   }
 
-//------------------------------------------------------------------------------Institute access
 /*
   access to the selected institute
 
@@ -298,7 +281,7 @@ $(function () {
     /*
       get the selected value from the selection field in the html page
     */
-    var auth_user;
+    const USER = firebase.auth().currentUser;
     var inst_id = $("#select_institute").val();
     var inst_name = $("#select_institute").find(':selected').text();
 
@@ -309,54 +292,55 @@ $(function () {
       /*
         if it is get database and user reference
       */
-      const user = firebase.auth().currentUser;
       const dbRef = firebase.database().ref();
-
-      var confirmed = false;
 
       /*
         insert the institute to the user institute list
       */
-      dbRef.child('user/' + user.uid + '/institute/').update({
+      dbRef.child('user/' + USER.uid + '/institute/').update({
         [inst_id] : inst_name
       });
 
       /*
         insert the user to the institute user list
       */
-      dbRef.child('institute/' + inst_id + '/user/' + user.uid).update({
-        name: user.displayName
+      dbRef.child('institute/' + inst_id + '/user/' + USER.uid).update({
+        name: USER.displayName
       });
 
       /*
         check if the user is authorized to access to the institute page
       */
-      dbRef.child('institute/' + inst_id + '/user/' + user.uid).once('value',snap => {
+      dbRef.child('institute/' + inst_id + '/user/' + USER.uid).once('value',snap => {
+        var conf = false;
         snap.forEach(childSnap => {
           if (childSnap.key == 'confirmed' && childSnap.val() == true) {
-            confirmed = true;
+            conf = true;
           }
         });
 
         /*
           if the user is confirmed, allow access otherwise notify the
-          "waiing confirmation" status and go to the user page
+          "waiting confirmation" status and go to the user page
         */
-        if (confirmed) {
+        if (conf) {
+
           /*
             set the institute as the default user institute
           */
-          dbRef.child('user/' + user.uid + '/institute').update({
+          dbRef.child('user/' + USER.uid + '/institute').update({
             default_institute : inst_id
           });
-          logged_institute_id = inst_id;
-          loadInstituteInfo();
-          showPage($("#institute_page"));
+
+          INSTITUTE_ID = inst_id;
+          goInstitutePage();
         } else {
-          loadUserInfo();
-          showPage($("#user_page"));
+          goUserPage();
           alert("Waiting Confirmation: Contact an institute admin to get access.")
         }
+
+
+
       });
     } else {
       alert('Select an institute');
@@ -366,18 +350,24 @@ $(function () {
 /*
   show user data (name and password) on the user page
 */
-  function loadUserInfo() {
-    const user = firebase.auth().currentUser;
+  function goUserPage() {
+    const USER = firebase.auth().currentUser;
     $("#user_info").empty();
-    $("#user_info").append("<p>User: "+ user.displayName + '<br/>Email: ' + user.email + '</p>');
+    $("#user_info").append("<p>User: "+ USER.displayName + '<br/>Email: ' + USER.email + '</p>');
+    showPage($("#user_page"));
   }
 
 /*
   show institute info on institute page
 */
-  function loadInstituteInfo () {
-    if (logged_institute_id != null) {
-      var ref = firebase.database().ref('institute/' + logged_institute_id);
+  function goInstitutePage () {
+    /*
+      load institute info
+    */
+    if (INSTITUTE_ID != null) {
+      const USER = firebase.auth().currentUser;
+      var ref = firebase.database().ref('institute/' + INSTITUTE_ID);
+
       ref.once('value', snap => {
         snap.forEach(childSnap => {
           if (childSnap.key == 'name') {
@@ -385,13 +375,30 @@ $(function () {
           }
         });
       });
+
+      ref.child('/user/' + USER.uid).once('value',snap => {
+        var admin = false;
+        snap.forEach(childSnap => {
+          if (childSnap.key == 'admin' && childSnap.val() == true) {
+            admin = true;
+          }
+        });
+
+        if (admin) {
+          showPage($("#institute_page"));
+          $("#admin_btn").show();
+        } else {
+          $("#admin_btn").hide();
+          showPage($("#institute_page"));
+        }
+      });
     }
   }
 
   function loadUsersList() {
     $("#user_table_body").empty();
-    const user = firebase.auth().currentUser;
-    const dbRef = firebase.database().ref('institute/' + logged_institute_id + '/user/');
+    const USER = firebase.auth().currentUser;
+    const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/user/');
     var user_list = dbRef.on('value', snap => {
       snap.forEach(childSnap => {
         var name;
@@ -422,7 +429,7 @@ $(function () {
 
         $("#"+childSnap.key+" .conf_btn").on('click', function() {
           institute_user_ref = dbRef.child(childSnap.key);
-          if (user.uid != childSnap.key) {
+          if (USER.uid != childSnap.key) {
             if (confirmed == true) {
               institute_user_ref.update({
                 confirmed: false,
@@ -445,7 +452,7 @@ $(function () {
 
         $("#"+childSnap.key+" .admin_btn").on('click', function() {
           institute_user_ref = dbRef.child(childSnap.key);
-          if (user.uid != childSnap.key) {
+          if (USER .uid != childSnap.key) {
             if (admin == true) {
               institute_user_ref.update({
                 admin: false
@@ -467,7 +474,5 @@ $(function () {
       });
     });
   }
-
-
 
 });
