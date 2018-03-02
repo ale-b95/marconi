@@ -45,11 +45,6 @@ $(function () {
     logOnInstitute();
   });
 
-  $("#admin_btn").on('click', () => {
-    loadUsersList();
-    showPage($("#administration_page"));
-  });
-
 /*
   called at every user state change (login / logout)
 */
@@ -338,9 +333,6 @@ $(function () {
           goUserPage();
           alert("Waiting Confirmation: Contact an institute admin to get access.")
         }
-
-
-
       });
     } else {
       alert('Select an institute');
@@ -385,8 +377,8 @@ $(function () {
         });
 
         if (admin) {
-          showPage($("#institute_page"));
-          $("#admin_btn").show();
+            showPage($("#institute_page"));
+            $("#admin_btn").show();
         } else {
           $("#admin_btn").hide();
           showPage($("#institute_page"));
@@ -394,85 +386,4 @@ $(function () {
       });
     }
   }
-
-  function loadUsersList() {
-    $("#user_table_body").empty();
-    const USER = firebase.auth().currentUser;
-    const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/user/');
-    var user_list = dbRef.on('value', snap => {
-      snap.forEach(childSnap => {
-        var name;
-        var admin = null;
-        var confirmed = null;
-        childSnap.forEach(gcSnap => {
-          if (gcSnap.key == 'name') {
-            name = gcSnap.val();
-          } else if (gcSnap.key == 'admin'){
-            admin = gcSnap.val();
-          } else if (gcSnap.key == 'confirmed'){
-            confirmed = gcSnap.val();
-          }
-        });
-
-        if (confirmed == null) {
-          confirmed = 'false';
-        }
-
-        if (admin == null) {
-          admin = 'false';
-        }
-
-
-        $("#user_table_body").append('<tr id="'+childSnap.key+'"><td>'+name+'</td>'+
-        '<td><button class="btn btn-primary btn-sm conf_btn" type="button">'+confirmed+'</button></td>'+
-        '<td><button class="btn btn-primary btn-sm admin_btn" type="button">'+admin+'</button></td></tr>');
-
-        $("#"+childSnap.key+" .conf_btn").on('click', function() {
-          institute_user_ref = dbRef.child(childSnap.key);
-          if (USER.uid != childSnap.key) {
-            if (confirmed == true) {
-              institute_user_ref.update({
-                confirmed: false,
-                admin: false
-              });
-              $("#"+childSnap.key+" .conf_btn").text('false');
-              $("#"+childSnap.key+" .admin_btn").text('false');
-            } else {
-              institute_user_ref.update({
-                confirmed: true
-              });
-              $("#"+childSnap.key+" .conf_btn").text('true');
-            }
-          } else {
-            alert('Cannot modify your own privileges')
-          }
-
-          loadUsersList();
-        });
-
-        $("#"+childSnap.key+" .admin_btn").on('click', function() {
-          institute_user_ref = dbRef.child(childSnap.key);
-          if (USER .uid != childSnap.key) {
-            if (admin == true) {
-              institute_user_ref.update({
-                admin: false
-              });
-              $("#"+childSnap.key+" .admin_btn").text('false');
-            } else {
-              institute_user_ref.update({
-                admin: true,
-                confirmed: true
-              });
-              $("#"+childSnap.key+" .admin_btn").text('true');
-              $("#"+childSnap.key+" .conf_btn").text('true');
-            }
-          } else {
-            alert('Cannot modify your own privileges');
-          }
-          loadUsersList();
-        });
-      });
-    });
-  }
-
 });
