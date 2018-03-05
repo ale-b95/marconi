@@ -29,15 +29,19 @@ div {
   width: 100%;
 }
 
+.btnsize {
+  width: 60%;
+}
 
-#roles_and_permission_page {
+#roles_and_permission_page, #admin_classrooms_page {
   height: 90%;
   width: 90%;
+
 }
 
 .table-fixed{
   width: 100%;
-  text-align: left;
+  align: center;
 
   tbody{
     overflow-y: auto;

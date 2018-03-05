@@ -15,7 +15,8 @@ $(function () {
 
   $("#add_classroom_btn").on('click', () => {
     addClassroom();
-  })
+  });
+
 
   function loadUsersList() {
     $("#user_table_body").empty();
@@ -101,15 +102,16 @@ $(function () {
     const classroomName = $("#classroom_name")[0];
     const classroomCapacity = $("#classroom_capacity")[0];
     const dbRef = firebase.database().ref();
-
-    dbRef.child('institute/'+INSTITUTE_ID+'/classroom').push({
-      classroom_name : classroomName.value,
-      classroom_capacity : classroomCapacity.value
-    }).catch(error => console.log('user not updated ' + error.message)).then(() =>{
-      loadClassroomList();
-      $("#classroom_name").val("");
-      $("#classroom_capacity").val("");      
-    });
+    if (classroomName.value != '' && classroomCapacity.value != '') {
+      $("#admin_classroom_table_body").empty();
+      dbRef.child('institute/'+INSTITUTE_ID+'/classroom').push({
+        classroom_name : classroomName.value,
+        classroom_capacity : classroomCapacity.value
+      }).catch(error => console.log('user not updated ' + error.message)).then(() =>{
+        $("#classroom_name").val("");
+        $("#classroom_capacity").val("");
+      });
+    }
   }
 
   function loadClassroomList() {
@@ -117,6 +119,7 @@ $(function () {
     const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/classroom/');
     var classroomList =  dbRef.on('value', snap => {
       snap.forEach(childSnap => {
+        var key =  childSnap.key;
         var name;
         var capacity;
         childSnap.forEach(gcSnap => {
@@ -126,9 +129,17 @@ $(function () {
             capacity = gcSnap.val();
           }
         });
-        $("#admin_classroom_table_body").append('<tr><td>'+name+'</td>'+
+        var my_btn = '<tr><td>'+name+'</td>'+
         '<td>'+capacity+'</td>'+
-        '<td><button class="btn btn-primary btn-sm rm_classroom_btn" type="button">X</button></td></tr>');
+        '<td><button id="'+ key +'" class="btn btn-primary btn-sm" type="button">X</button></td></tr>';
+
+        $("#admin_classroom_table_body").append(my_btn);
+
+        $("#"+key).on('click', () => {
+          $("#admin_classroom_table_body").empty();
+          dbRef.child(key).remove();
+          loadUsersList();
+        });
       });
     });
   }
