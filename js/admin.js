@@ -17,6 +17,20 @@ $(function () {
     addClassroom();
   });
 
+  $("#schedule_btn").on('click', () => {
+    showPage($("#schedule_page"));
+  });
+
+  $("#events_btn").on('click', () => {
+    showPage($("#events_page"));
+  });
+
+  $("#prenotations_btn").on('click', () => {
+    showPage($("#prenotations_page"));
+  });
+
+
+
 
   function loadUsersList() {
     $("#user_table_body").empty();
