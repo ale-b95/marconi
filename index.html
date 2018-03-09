@@ -12,6 +12,8 @@
       <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
 
       <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/bootstrap-datepicker.min.css" rel="stylesheet">
+
       <link rel="stylesheet" type="text/css" href="css/index.css"/>
 
       <title>Marconi</title>
@@ -44,7 +46,6 @@
         <hr/>
         <button class="btn btn-lg btn-primary" id="logout_button" type="button">Log Out</button>
       </div>
-
 
       <div id="new_institute" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">New Institute</h1>
@@ -129,9 +130,15 @@
 
       <div id="schedule_page" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">Classroom Schedule</h1>
-        <input class="datepicker" data-provide="datepicker">
 
+        <div class="input-group date" data-provide="datepicker">
+          <input type="text" class="form-control">
+          <div class="input-group-addon">
+            <span class="glyphicon glyphicon-th"></span>
+          </div>
+        </div>
         <hr/>
+        
         <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
 
@@ -163,17 +170,18 @@
         }
       </script>
 
-<!--
-    <script type="text/javascript" src="cordova.js"></script>
+
+    <!--<script type="text/javascript" src="cordova.js"></script>-->
     <script type="text/javascript" src="js/phonegapConfig.js"></script>
     <script type="text/javascript">app.initialize();</script>
--->
 
     <script type="text/javascript" src="js/firebaseConfig.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/admin.js"></script>
+    <script type="text/javascript" src="js/mainApp.js"></script>
 
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
   </body>
 </html>

@@ -1,4 +1,5 @@
 $(function () {
+  $(".collapse").hide();
 
   $("#signup_link").on('click',() => {
     showPage($("#signup"));
