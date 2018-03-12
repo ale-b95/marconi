@@ -131,14 +131,19 @@
       <div id="schedule_page" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">Classroom Schedule</h1>
 
-        <div class="input-group date" data-provide="datepicker">
-          <input type="text" class="form-control">
+        <select class="form-control" id="select_classroom">
+        </select>
+
+        <div class="input-group date datepicker" data-provide="datepicker">
+          <input type="text" class="form-control" placeholder="Date">
           <div class="input-group-addon">
             <span class="glyphicon glyphicon-th"></span>
           </div>
         </div>
+
+        <br/>
+        <button id="get_date_btn" class="btn btn-primary btn-lg" type="button">Find</button>
         <hr/>
-        
         <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
 
@@ -181,6 +186,7 @@
     <script type="text/javascript" src="js/mainApp.js"></script>
 
     <script src="js/popper.min.js"></script>
+    <script src="js/moment.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-datepicker.min.js"></script>
   </body>

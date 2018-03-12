@@ -18,6 +18,7 @@ $(function () {
   });
 
   $("#schedule_btn").on('click', () => {
+    loadClassroomSelectList();
     showPage($("#schedule_page"));
   });
 
@@ -154,6 +155,19 @@ $(function () {
           dbRef.child(key).remove();
           loadUsersList();
         });
+      });
+    });
+  }
+
+  function loadClassroomSelectList() {
+    $('#select_classroom').empty();
+    const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/classroom/');
+    var classroomList =  dbRef.on('value', snap => {
+      snap.forEach(childSnap => {
+        var name = childSnap.child('/classroom_name').val();
+        var key = childSnap.key;
+
+        $('#select_classroom').append('<option value="'+key+'">'+name+'</option>');
       });
     });
   }

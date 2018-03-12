@@ -280,7 +280,6 @@ $(function () {
     const USER = firebase.auth().currentUser;
     var inst_id = $("#select_institute").val();
     var inst_name = $("#select_institute").find(':selected').text();
-
     /*
       ensure the value is valid
     */
