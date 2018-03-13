@@ -13,11 +13,20 @@ $(function () {
     showPage($("#admin_classrooms_page"));
   });
 
+  $("#admin_classes_btn").on('click', () => {
+    showPage($("#admin_classes_page"));
+  });
+
   $("#add_classroom_btn").on('click', () => {
     addClassroom();
   });
 
+  $("#add_class_btn").on('click', () => {
+    addClass();
+  });
+
   $("#schedule_btn").on('click', () => {
+    $("#schedule_table_body").empty();
     loadClassroomSelectList();
     showPage($("#schedule_page"));
   });
@@ -161,6 +170,7 @@ $(function () {
 
   function loadClassroomSelectList() {
     $('#select_classroom').empty();
+    $('#select_classroom').append('<option>Select a Classroom</option>');
     const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/classroom/');
     var classroomList =  dbRef.on('value', snap => {
       snap.forEach(childSnap => {

@@ -1,6 +1,12 @@
 $(function () {
+  var date = null;
+  var day;
+  var month;
+  var year;
+  var classroom_name = null;
+  var classroom_id = null;
 
-  $('.datepicker').datepicker({
+  $('#classroom_datepicker').datepicker({
     format: 'dd/mm/yyyy',
     language: "it",
     autoclose: true,
@@ -9,11 +15,40 @@ $(function () {
     daysOfWeekHighlighted: "0"
   });
 
-  $('#get_date_btn').on('click', () => {
-    var year = $(".datepicker").datepicker('getDate');
-    var month = $(".datepicker").datepicker('getDate');
-    var day = $(".datepicker").datepicker('getDate').getDate();
-    var croom_id = $("#select_classroom").val();
-    var croom_name = $("#select_classroom").find(':selected').text();
+  $('#classroom_datepicker').on('changeDate', () => {
+    if (classroom_name != 'Select a Classroom') loadClassroomSchedule();
   });
-})
+
+  $("#select_classroom").on('change', () => {
+    if (date) loadClassroomSchedule();
+  });
+
+  function selectDate() {
+    date = $("#classroom_datepicker").datepicker('getDate');
+    day = date.getDate();
+    month = date.getMonth();
+    year = date.getFullYear();
+  }
+
+  function selectClassroom() {
+    classroom_id = $("#select_classroom").val();
+    classroom_name = $("#select_classroom").find(':selected').text();
+  }
+
+  function loadClassroomSchedule() {
+    selectDate();
+    selectClassroom();
+
+    if (classroom_name != 'Select a Classroom' && date) {
+      $("#schedule_table_body").empty();
+      var i = 8;
+      var n = 16;
+      for(; i < n ; i++) {
+        $("#schedule_table_body").append(
+          '<tr>'+
+          '<th>'+i+':00</th><th></th>'+
+        '</tr>');
+      }
+    }
+  }
+});

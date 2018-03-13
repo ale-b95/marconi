@@ -84,6 +84,7 @@
           <h1 class="h3 mb-3 font-weight-normal">Administration</h1>
           <button id="roles_and_permission_btn" class="btn btn-primary btn-lg" type="button">Roles and Permissions</button>
           <button id="admin_classrooms_btn" class="btn btn-primary btn-lg" type="button">Classrooms</button>
+          <button id="admin_classes_btn" class="btn btn-primary btn-lg" type="button">Classes</button>
           <button id="admin_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenotations</button>
           <button id="admin_events_btn" class="btn btn-primary btn-lg" type="button">Events</button>
           <hr/>
@@ -91,7 +92,7 @@
       </div>
 
       <div id="roles_and_permission_page" class="collapse">
-        <table id="user_table" class="table table-stripped table-fixed table-sm">
+        <table id="user_table" class="table table-fixed table-sm">
           <thead>
             <tr>
               <th>User</th>
@@ -107,7 +108,7 @@
 
       <div id="admin_classrooms_page" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">Classrooms</h1>
-        <table id="admin_classrooms_table" class="table table-stripped table-fixed table-sm">
+        <table id="admin_classrooms_table" class="table table-fixed table-sm">
           <thead>
             <tr>
               <th>Classroom</th>
@@ -128,21 +129,52 @@
         <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
       </div>
 
+      <div id="admin_classes_page" class="collapse">
+        <h1 class="h3 mb-3 font-weight-normal">Classes</h1>
+        <table id="admin_classes_table" class="table table-fixed table-sm">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Students</th>
+            </tr>
+          </thead>
+          <tbody id="admin_classes_table_body">
+          </tbody>
+        </table>
+        <hr />
+        <form id="add_class_form">
+          <p>Add class</p>
+          <input id="class_name"  class="form-control" type="text" placeholder="class name">
+          <input id="n_of_students"  class="form-control"  type="number"  min="1" placeholder="number of sudents">
+          <button id="add_class_btn" type="button" class="btn btn-primary btn-lg btnsize">Add class</button>
+        </form>
+        <hr />
+        <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
+      </div>
+
       <div id="schedule_page" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">Classroom Schedule</h1>
-
         <select class="form-control" id="select_classroom">
         </select>
-
-        <div class="input-group date datepicker" data-provide="datepicker">
+        <select class="form-control" id="select_class">
+        </select>
+        <div id="classroom_datepicker" class="input-group date datepicker" data-provide="datepicker">
           <input type="text" class="form-control" placeholder="Date">
           <div class="input-group-addon">
             <span class="glyphicon glyphicon-th"></span>
           </div>
         </div>
-
-        <br/>
-        <button id="get_date_btn" class="btn btn-primary btn-lg" type="button">Find</button>
+        <hr/>
+        <table id="schedule_table" class="table table-fixed table-sm">
+          <thead>
+            <tr>
+              <th>Hour</th>
+              <th>Prenotation</th>
+            </tr>
+          </thead>
+          <tbody id="schedule_table_body">
+          </tbody>
+        </table>
         <hr/>
         <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
