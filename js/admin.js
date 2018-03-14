@@ -39,9 +39,6 @@ $(function () {
     showPage($("#prenotations_page"));
   });
 
-
-
-
   function loadUsersList() {
     $("#user_table_body").empty();
     const USER = firebase.auth().currentUser;
@@ -127,13 +124,13 @@ $(function () {
     const classroomCapacity = $("#classroom_capacity")[0];
     const dbRef = firebase.database().ref();
     if (classroomName.value != '' && classroomCapacity.value != '') {
-      $("#admin_classroom_table_body").empty();
       dbRef.child('institute/'+INSTITUTE_ID+'/classroom').push({
         classroom_name : classroomName.value,
         classroom_capacity : classroomCapacity.value
       }).catch(error => console.log('user not updated ' + error.message)).then(() =>{
         $("#classroom_name").val("");
         $("#classroom_capacity").val("");
+        loadClassroomList();
       });
     }
   }
@@ -141,7 +138,7 @@ $(function () {
   function loadClassroomList() {
     $("#admin_classroom_table_body").empty();
     const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/classroom/');
-    var classroomList =  dbRef.on('value', snap => {
+    var classroomList =  dbRef.once('value', snap => {
       snap.forEach(childSnap => {
         var key =  childSnap.key;
         var name;
@@ -162,7 +159,8 @@ $(function () {
         $("#"+key).on('click', () => {
           $("#admin_classroom_table_body").empty();
           dbRef.child(key).remove();
-          loadUsersList();
+          //loadUsersList();
+          loadClassroomList();
         });
       });
     });

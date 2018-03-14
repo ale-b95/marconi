@@ -81,14 +81,14 @@
       </div>
 
       <div id="administration_page" class="collapse">
-          <h1 class="h3 mb-3 font-weight-normal">Administration</h1>
-          <button id="roles_and_permission_btn" class="btn btn-primary btn-lg" type="button">Roles and Permissions</button>
-          <button id="admin_classrooms_btn" class="btn btn-primary btn-lg" type="button">Classrooms</button>
-          <button id="admin_classes_btn" class="btn btn-primary btn-lg" type="button">Classes</button>
-          <button id="admin_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenotations</button>
-          <button id="admin_events_btn" class="btn btn-primary btn-lg" type="button">Events</button>
-          <hr/>
-          <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
+        <h1 class="h3 mb-3 font-weight-normal">Administration</h1>
+        <button id="roles_and_permission_btn" class="btn btn-primary btn-lg" type="button">Roles and Permissions</button>
+        <button id="admin_classrooms_btn" class="btn btn-primary btn-lg" type="button">Classrooms</button>
+        <button id="admin_classes_btn" class="btn btn-primary btn-lg" type="button">Classes</button>
+        <button id="admin_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenotations</button>
+        <button id="admin_events_btn" class="btn btn-primary btn-lg" type="button">Events</button>
+        <hr/>
+        <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
 
       <div id="roles_and_permission_page" class="collapse">
@@ -156,8 +156,10 @@
         <h1 class="h3 mb-3 font-weight-normal">Classroom Schedule</h1>
         <select class="form-control" id="select_classroom">
         </select>
+        <br/>
         <select class="form-control" id="select_class">
         </select>
+        <br/>
         <div id="classroom_datepicker" class="input-group date datepicker" data-provide="datepicker">
           <input type="text" class="form-control" placeholder="Date">
           <div class="input-group-addon">
@@ -191,22 +193,17 @@
         <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
       </div>
 
-
-<!-- SCRIPT --------------------------------------------------------------------------------------------------------------->
       <script type='text/javascript' >
         var INSTITUTE_ID = null;
         var CURRENT_PAGE = null;
-
         function showPage(page) {
           if (CURRENT_PAGE != null){
             CURRENT_PAGE.hide();
           }
-
           CURRENT_PAGE = page;
           CURRENT_PAGE.show();
         }
       </script>
-
 
     <!--<script type="text/javascript" src="cordova.js"></script>-->
     <script type="text/javascript" src="js/phonegapConfig.js"></script>

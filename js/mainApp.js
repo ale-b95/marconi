@@ -6,6 +6,7 @@ $(function () {
   var classroom_name = null;
   var classroom_id = null;
 
+
   $('#classroom_datepicker').datepicker({
     format: 'dd/mm/yyyy',
     language: "it",
