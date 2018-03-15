@@ -14,6 +14,9 @@ $(function () {
   });
 
   $("#admin_classes_btn").on('click', () => {
+    $("#selection_academic_year").val(getEndingAcademicYear());
+    $("#insertion_academic_year").val(getEndingAcademicYear());
+    loadClassList();
     showPage($("#admin_classes_page"));
   });
 
@@ -22,7 +25,7 @@ $(function () {
   });
 
   $("#add_class_btn").on('click', () => {
-    addClass();
+    addClassToDb();
   });
 
   $("#schedule_btn").on('click', () => {
@@ -37,6 +40,10 @@ $(function () {
 
   $("#prenotations_btn").on('click', () => {
     showPage($("#prenotations_page"));
+  });
+
+  $("#selection_academic_year").on('change', () => {
+    loadClassList();
   });
 
   function loadUsersList() {
@@ -177,6 +184,67 @@ $(function () {
 
         $('#select_classroom').append('<option value="'+key+'">'+name+'</option>');
       });
+    });
+  }
+
+  function addClassToDb() {
+    var className = $("#class_name")[0].value;
+    var nOfStudents = $("#n_of_students")[0].value;
+    var academicYear = $("#insertion_academic_year")[0].value;
+    var academicYearPlus = academicYear / 1 + 1;
+    var completeYear = academicYear + '-' + academicYearPlus;
+    if (className && className != '' && nOfStudents && academicYear) {
+      firebase.database().ref('institute/' +INSTITUTE_ID+ '/class/').push().
+      set({
+        name : className,
+        number_of_students : nOfStudents,
+        academic_year : completeYear
+      }).catch(error => console.log(error.message)).then(() =>{
+        $("#class_name").val("");
+        $("#n_of_students").val("");
+        loadClassList();
+      });
+    } else {
+      console.log('wrong form compilation');
+    }
+  }
+
+  function loadClassList() {
+    var year = $("#selection_academic_year")[0].value;
+    var academicYear = year + '-' + (year / 1 + 1);
+
+    $("#admin_classes_table_body").empty();
+    const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/class/');
+    dbRef.once('value', snap => {
+      snap.forEach(childSnap => {
+        var rightYear = false;
+        var classkey = childSnap.key;
+
+        childSnap.forEach(gcSnap => {
+          if (gcSnap.key == "academic_year" && gcSnap.val() == academicYear){
+            rightYear = true;
+          }
+        });
+        if (rightYear) {
+          var className;
+          var numberOfStudents;
+          childSnap.forEach(gcSnap => {
+            if (gcSnap.key == "name") {
+              className = gcSnap.val();
+            } else if (gcSnap.key == "number_of_students") {
+              numberOfStudents = gcSnap.val();
+            }
+          });
+          var tableRow = '<tr><td>'+className+'</td><td>'+numberOfStudents+'</td>'+
+          '<td><button id="'+ classkey +'" class="btn btn-primary btn-sm" type="button">X</button></td></tr>';
+          $("#admin_classes_table_body").append(tableRow);
+          $("#"+classkey).on('click', () => {
+            $("#admin_class_table_body").empty();
+            dbRef.child(classkey).remove();
+            loadClassList();
+          });
+        }
+      })
     });
   }
 });

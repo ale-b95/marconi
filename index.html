@@ -118,37 +118,38 @@
           <tbody id="admin_classroom_table_body">
           </tbody>
         </table>
-        <hr />
+        <hr/>
         <form id="add_classroom_form">
           <p>Add classroom</p>
           <input id="classroom_name"  class="form-control" type="text" placeholder="classroom name">
           <input id="classroom_capacity"  class="form-control"  type="number"  min="1" placeholder="capacity">
           <button id="add_classroom_btn" type="button" class="btn btn-primary btn-lg btnsize">Add classroom</button>
         </form>
-        <hr />
+        <hr/>
         <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
       </div>
 
       <div id="admin_classes_page" class="collapse">
         <h1 class="h3 mb-3 font-weight-normal">Classes</h1>
+        <input id="selection_academic_year"  class="form-control"  type="number"  min="2017" max="2050" placeholder="academic year">
         <table id="admin_classes_table" class="table table-fixed table-sm">
           <thead>
             <tr>
               <th>Class</th>
               <th>Students</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tbody id="admin_classes_table_body">
           </tbody>
         </table>
-        <hr />
         <form id="add_class_form">
-          <p>Add class</p>
           <input id="class_name"  class="form-control" type="text" placeholder="class name">
           <input id="n_of_students"  class="form-control"  type="number"  min="1" placeholder="number of sudents">
+          <input id="insertion_academic_year"  class="form-control"  type="number"  min="2017" max="2050" placeholder="academic year">
           <button id="add_class_btn" type="button" class="btn btn-primary btn-lg btnsize">Add class</button>
         </form>
-        <hr />
+        <hr/>
         <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
       </div>
 
@@ -196,6 +197,27 @@
       <script type='text/javascript' >
         var INSTITUTE_ID = null;
         var CURRENT_PAGE = null;
+
+        var date = new Date();
+
+        function getAcademicYear() {
+          var year = date.getFullYear();
+          if (date.getMonth() < 8) {
+            return ((year / 1 - 1) + '-' + year);
+          } else {
+            return (year +'-' + (year / 1 + 1));
+          }
+        }
+
+        function getEndingAcademicYear() {
+          var year = date.getFullYear();
+          if (date.getMonth() < 8) {
+            return (year / 1 - 1);
+          } else {
+            return year;
+          }
+        }
+
         function showPage(page) {
           if (CURRENT_PAGE != null){
             CURRENT_PAGE.hide();
