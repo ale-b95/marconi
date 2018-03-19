@@ -20,6 +20,14 @@ input {
   margin-bottom: 4%;
 }
 
+.selected_row {
+  background-color: lightblue;
+}
+
+.booked {
+  background-color: red;
+}
+
 div {
   width: 60%;
 }

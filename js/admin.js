@@ -31,6 +31,7 @@ $(function () {
   $("#schedule_btn").on('click', () => {
     $("#schedule_table_body").empty();
     loadClassroomSelectList();
+    loadClassSelectList();
     showPage($("#schedule_page"));
   });
 
@@ -166,7 +167,6 @@ $(function () {
         $("#"+key).on('click', () => {
           $("#admin_classroom_table_body").empty();
           dbRef.child(key).remove();
-          //loadUsersList();
           loadClassroomList();
         });
       });
@@ -177,12 +177,27 @@ $(function () {
     $('#select_classroom').empty();
     $('#select_classroom').append('<option>Select a Classroom</option>');
     const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/classroom/');
-    var classroomList =  dbRef.on('value', snap => {
+    var classroomList = dbRef.on('value', snap => {
       snap.forEach(childSnap => {
         var name = childSnap.child('/classroom_name').val();
         var key = childSnap.key;
 
-        $('#select_classroom').append('<option value="'+key+'">'+name+'</option>');
+        $('#select_classroom').append('<option value="'+key+'">'+name+ '</option>');
+      });
+    });
+  }
+
+  function loadClassSelectList() {
+    $('#select_class').empty();
+    $('#select_class').append('<option>Select a Class</option>');
+    const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/class/');
+    var classList = dbRef.on('value', snap => {
+      snap.forEach(childSnap => {
+        var name = childSnap.child('/name').val();
+        var aYear = childSnap.child('/academic_year').val();
+        var key = childSnap.key;
+
+        $('#select_class').append('<option value="'+key+'">'+name+' (' +aYear+ ')</option>');
       });
     });
   }

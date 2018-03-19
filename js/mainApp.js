@@ -5,6 +5,9 @@ $(function () {
   var year;
   var classroom_name = null;
   var classroom_id = null;
+  var cs_selected_rows = 0;
+
+  var selected_hours = [];
 
 
   $('#classroom_datepicker').datepicker({
@@ -40,16 +43,59 @@ $(function () {
     selectDate();
     selectClassroom();
 
-    if (classroom_name != 'Select a Classroom' && date) {
+    var arr = {};
+
+    if (classroom_id != 'Select a Classroom' && date) {
+      console.log(day + ' ' + month + ' ' + year);
+      var dbRef = firebase.database().ref('institute/'
+        +INSTITUTE_ID
+        +'/prenotation/'
+        +year+'/'
+        +month+'/'
+        +day+'/classroom/');
+
+      dbRef.once('value', snap => {
+        console.log(snap.key);
+      });
+
+      /*
+      TODO
+        ottenere reference corretta del giorno selezionato controllando sull
+        db se esiste 
+      */
+
       $("#schedule_table_body").empty();
       var i = 8;
       var n = 16;
       for(; i < n ; i++) {
         $("#schedule_table_body").append(
-          '<tr>'+
-          '<th>'+i+':00</th><th></th>'+
+          '<tr class="clickable-row" value="'+i+'">'+
+          '<th>'+i+':00</th><td></td>'+
         '</tr>');
       }
     }
   }
+
+  $('#schedule_table').on('click', '.clickable-row', function(event) {
+    if ($(this).hasClass('selected_row')) {
+      $(this).removeClass('selected_row');
+      idx = selected_hours.indexOf($(this).attr('value'));
+      if (idx >= 0) selected_hours.splice(idx, 1);
+      cs_selected_rows--;
+    } else {
+      $(this).addClass('selected_row');//.siblings().removeClass('selected_row');
+      selected_hours.push($(this).attr('value'));
+      cs_selected_rows++;
+    }
+  });
+
+  $('.cs_back_btn').on('click', () => {
+    cs_selected_rows = 0;
+  });
+
+  $('#book_prenotation_btn').on('click', () => {
+    if (cs_selected_rows > 0) {
+
+    }
+  });
 });
