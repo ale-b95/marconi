@@ -30,7 +30,7 @@ $(function () {
   function selectDate() {
     date = $("#classroom_datepicker").datepicker('getDate');
     day = date.getDate();
-    month = date.getMonth();
+    month = date.getMonth() + 1;
     year = date.getFullYear();
   }
 
@@ -46,33 +46,67 @@ $(function () {
     var arr = {};
 
     if (classroom_id != 'Select a Classroom' && date) {
-      console.log(day + ' ' + month + ' ' + year);
-      var dbRef = firebase.database().ref('institute/'
+      $("#schedule_table_body").empty();
+      var pRef = firebase.database().ref('institute/'
         +INSTITUTE_ID
         +'/prenotation/'
         +year+'/'
         +month+'/'
-        +day+'/classroom/');
+        +day+'/'
+        +classroom_id+'/'
+        );
 
-      dbRef.once('value', snap => {
-        console.log(snap.key);
+      //aggiorna array con key delle prenotaizoni
+      pRef.once('value', snap => {
+        snap.forEach(childSnap => {
+          childSnap.forEach(gcSnap => {
+            arr['h_'+childSnap.key] = gcSnap.val();
+          });
+        });
+      }).then(() => {
+        for (var hour = 8; hour<16; hour++) {
+          /*!(('h_' + starting_hour) in arr)*/
+            $("#schedule_table_body").append(
+              '<tr class="clickable-row" id="hid_'+hour+'" value="'+hour+'">'+
+              '<th>'+hour+':00</th><td></td>'+
+            '</tr>');
+            loadBookedHours(hour, arr);
+        }
       });
+    }
+  }
 
-      /*
-      TODO
-        ottenere reference corretta del giorno selezionato controllando sull
-        db se esiste 
-      */
+  function loadBookedHours(hour, arr) {
+    if (arr['h_'+hour]) {
+      var teacher_name;
+      var class_name;
+      var event_name;
 
-      $("#schedule_table_body").empty();
-      var i = 8;
-      var n = 16;
-      for(; i < n ; i++) {
-        $("#schedule_table_body").append(
-          '<tr class="clickable-row" value="'+i+'">'+
-          '<th>'+i+':00</th><td></td>'+
-        '</tr>');
-      }
+      var second_column;
+
+      firebase.database().ref('institute/'
+        +INSTITUTE_ID
+        +'/prenotation_list/'
+        + arr['h_' + hour]
+      ).once('value', father => {
+        father.forEach(child => {
+          if (child.key == 'teacher') {
+            teacher_name = child.val();
+          } else if (child.key == 'event') {
+            event_name = child.val();
+          } else if (child.key == 'class') {
+            class_name =  child.val();
+          }
+        });
+        if (event_name) {
+          second_column = event_name;
+        } else {
+          second_column = class_name + ' ' + teacher_name;
+        }
+        $("#hid_"+hour).empty();
+        $("#hid_"+hour).addClass('booked');
+        $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
+      });
     }
   }
 

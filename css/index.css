@@ -25,7 +25,8 @@ input {
 }
 
 .booked {
-  background-color: red;
+  background-color: blue;
+  color: white;
 }
 
 div {
