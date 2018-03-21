@@ -25,7 +25,15 @@ input {
 }
 
 .booked {
-  background-color: blue;
+  background-color: lightyellow;
+}
+
+.mybook {
+  background-color: lightgreen;
+}
+
+.mybook_selected {
+  background-color: red;
   color: white;
 }
 
