@@ -44,83 +44,60 @@ $(function () {
 
   }
 
-  function loadClassroomSchedule() {
-    selectDate();
-    selectClassroom();
-    var dbHoursRef = {};
+    function loadClassroomSchedule() {
+        selectDate();
+        selectClassroom();
 
-    if (classroom_id != 'Select a Classroom' && date) {
-      $("#schedule_table_body").empty();
-      var pRef = firebase.database().ref('institute/'
-        +INSTITUTE_ID
-        +'/prenotation/'
-        +year+'/'
-        +month+'/'
-        +day+'/'
-        +classroom_id+'/'
-        );
+        if (classroom_id != 'Select a Classroom' && date) {
+            $("#schedule_table_body").empty();
+            for (var hour = 8; hour<16; hour++) {
+                $("#schedule_table_body").append(
+                '<tr class="clickable-row" id="hid_'+hour+'" value="'+hour+'">'+
+                '<th>'+hour+':00</th><td></td>'+
+                '</tr>');
+            }
+            var pRef = firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/');
+            pRef.once('value', snap => {
+                var hour;
+                var teacher_name;
+                var class_name;
+                var event_name;
+                var teacher_id;
+                var second_column;
 
-      //aggiorna dbHoursRefay con key delle prenotaizoni
-      pRef.once('value', snap => {
-        snap.forEach(childSnap => {
-          dbHoursRef['h_'+childSnap.key] = childSnap.val();
-        });
-      }).then(() => {
-        for (var hour = 8; hour<16; hour++) {
-            $("#schedule_table_body").append(
-              '<tr class="clickable-row" id="hid_'+hour+'" value="'+hour+'">'+
-              '<th>'+hour+':00</th><td></td>'+
-            '</tr>');
-            loadBookedHours(hour, dbHoursRef);
+                snap.forEach(childSnap => {
+                    hour = childSnap.key;
+                    childSnap.forEach(gcSnap => {
+                        if (gcSnap.key == 'teacher') {
+                            teacher_name = gcSnap.val();
+                        } else if (gcSnap.key == 'event') {
+                            event_name = gcSnap.val();
+                        } else if (gcSnap.key == 'class') {
+                            class_name =  gcSnap.val();
+                        } else if (gcSnap.key == 'teacher_key') {
+                            teacher_id = gcSnap.val();
+                        }
+                    }); 
+
+                    if (event_name) {
+                        second_column = event_name;
+                    } else {
+                        second_column = class_name + ' ' + teacher_name;
+                    }
+
+                    $("#hid_"+hour).empty();
+                    $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
+                    user = firebase.auth().currentUser;
+                    if (user.uid == teacher_id){
+                        $("#hid_"+hour).addClass('mybook')
+                    } else {
+                        $("#hid_"+hour).addClass('booked');
+                        $("#hid_"+hour).removeClass('clickable-row');
+                    }
+                });
+            });
         }
-      });
     }
-  }
-
-  function loadBookedHours(hour, dbHoursRef) {
-    if (dbHoursRef['h_'+hour]) {
-      var teacher_name;
-      var class_name;
-      var event_name;
-      var teacher_id;
-
-      var second_column;
-
-      firebase.database().ref('institute/'
-        +INSTITUTE_ID
-        +'/prenotation_list/'
-        + dbHoursRef['h_' + hour]
-      ).once('value', father => {
-        father.forEach(child => {
-          if (child.key == 'teacher') {
-            teacher_name = child.val();
-          } else if (child.key == 'event') {
-            event_name = child.val();
-          } else if (child.key == 'class') {
-            class_name =  child.val();
-          } else if (child.key == 'teacher_key') {
-            teacher_id = child.val();
-          }
-        });
-
-        if (event_name) {
-          second_column = event_name;
-        } else {
-          second_column = class_name + ' ' + teacher_name;
-        }
-
-        $("#hid_"+hour).empty();
-        $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
-        user = firebase.auth().currentUser;
-        if (user.uid == teacher_id){
-          $("#hid_"+hour).addClass('mybook')
-        } else {
-          $("#hid_"+hour).addClass('booked');
-          $("#hid_"+hour).removeClass('clickable-row');
-        }
-      });
-    }
-  }
 
   $('#schedule_table').on('click', '.clickable-row', function(event) {
     if ($(this).hasClass('selected_row')) {
@@ -149,33 +126,21 @@ $(function () {
     }
   });
 
-  function increase_mb_select(x) {
-    mb_selected_rows += x;
-    if (mb_selected_rows > 0) {
-      $('#book_prenotation_btn').text('Cancel');
-    } else {
-      $('#book_prenotation_btn').text('Book');
+    function increase_mb_select(x) {
+        mb_selected_rows += x;
+        if (mb_selected_rows > 0) {
+            $('#book_prenotation_btn').text('Cancel');
+        } else {
+            $('#book_prenotation_btn').text('Book');
+        }
     }
-  }
 
   $('#book_prenotation_btn').on('click', () => {
     user = firebase.auth().currentUser;
     var class_name = $("#select_class").find(':selected').text();
 
     if (class_name && class_name != 'Select a Class' && cs_selected_rows > 0) {
-        var prenotation_inlist = firebase.database().ref('institute/'
-         +INSTITUTE_ID
-         +'/prenotation_list/').push({
-           class : class_name,
-           classroom : classroom_name,
-           classroom_key : classroom_id,
-           date : date,
-           teacher : user.displayName,
-           teacher_key : user.uid,
-           date : date
-         });
-
-        for (var i = 0; i < selected_hours.length; i++) {
+        for (var i = 0; i < selected_hours.length; i++) {            
           firebase.database().ref('institute/'
             +INSTITUTE_ID
             +'/prenotation/'
@@ -183,12 +148,17 @@ $(function () {
             +month+'/'
             +day+'/'
             +classroom_id+'/'
-          ).update({
-            [selected_hours[i]] : prenotation_inlist.key
+            +selected_hours[i]+'/'
+          ).set({
+            class : class_name,
+            classroom : classroom_name,
+            classroom_key : classroom_id,
+            date : date,
+            teacher : user.displayName,
+            teacher_key : user.uid
           });
         }
         selected_hours = [];
-        prenotation_id = [];
         loadClassroomSchedule();
         cs_selected_rows = 0;
         mb_selected_rows = 0;
@@ -196,33 +166,17 @@ $(function () {
     } else if (class_name == 'Select a Class' && cs_selected_rows > 0){
       alert ('Select a class');
     } else if (mb_selected_rows > 0) {
-      // ciclo per le ore selezionate
       for (var i = 0; i < selected_hours.length; i++) {
-        // referenza alle prenotazioni in data 'date' e aula scelta
-        var prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+
-        '/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/'+selected_hours[i]).remove();
+        var prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/'+selected_hours[i]);
+        prenotation_ref.remove();
       }
-
-      checkPrenotationInDate(date, )
-
       loadClassroomSchedule();
-      prenotation_id = [];
+    selected_hours = [];
       cs_selected_rows = 0;
       mb_selected_rows = 0;
       $('#book_prenotation_btn').text('Book');
     }
   });
-
-  function checkPrenotationInDate (myDate, prenotation_id) {
-    var my_day = myDate.getDate();
-    var my_month = myDate.getMonth() + 1;
-    var my_year = myDate.getFullYear();
-
-    var prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+
-    '/prenotation/'+my_year+'/'+my_month+'/'+my_day+'/'+classroom_id+'/').once('value', snap => {
-      console.log(prenotation_id);
-    });
-  }
 
 
   $('.cs_back_btn').on('click', () => {
