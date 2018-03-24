@@ -12,7 +12,6 @@ $(function () {
   var mb_selected_rows = 0;
 
   var selected_hours = [];
-  var prenotation_id = [];
 
 
   $('#classroom_datepicker').datepicker({
@@ -172,7 +171,8 @@ $(function () {
            classroom_key : classroom_id,
            date : date,
            teacher : user.displayName,
-           teacher_key : user.uid
+           teacher_key : user.uid,
+           date : date
          });
 
         for (var i = 0; i < selected_hours.length; i++) {
@@ -196,85 +196,34 @@ $(function () {
     } else if (class_name == 'Select a Class' && cs_selected_rows > 0){
       alert ('Select a class');
     } else if (mb_selected_rows > 0) {
-      // dichiaro array per contenere ID PRENOTAZIONI RIMOSSE
-
-
-      for (var i = 0; i < selected_hours.length; i++) {
-        var hour_prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+
-        '/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/');
-
-        hour_prenotation_ref.once('value', snap => {
-          snap.forEach(childSnap => {
-            console.log(selected_hours[i]);
-            if (childSnap.key == selected_hours[i]);
-            prenotation_id.push(childSnap.val());
-          });
-        }).then(hour_prenotation_ref.child(selected_hours[i]).remove());
-      }
-
-      console.log(prenotation_id);
-
-
-      /*
-      // dichiaro array per contenere ID PRENOTAZIONI RIMOSSE
-      var prenotation_id = [];
-
-      // referenza alle prenotazioni in data 'date' e aula scelta
-      var prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+
-      '/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/');
-
       // ciclo per le ore selezionate
       for (var i = 0; i < selected_hours.length; i++) {
-
-        //referenza alla prima ora selezionata
-        var hour_ref = prenotation_ref.child(selected_hours[i]);
-        hour_ref.once('value', snap => {
-
-          //inserisco ID PRENOTAZIONE DA RIMUOVERE
-          prenotation_id[prenotation_id.length] = snap.val();
-        }).then(() => {
-
-          //rimuovo prenotazione
-          hour_ref.remove();
-          console.log('rimuovo prenotazione');
-        });
+        // referenza alle prenotazioni in data 'date' e aula scelta
+        var prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+
+        '/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/'+selected_hours[i]).remove();
       }
 
-      // ottengo referenza a prenotation list
-      var p_list_ref = firebase.database().ref('institute/'+INSTITUTE_ID
-      +'/prenotation_list/');
-
-      //ciclo gli id delle prenotazioni eliminate
-      for (var i = 0; i < prenotation_id.length; i++) {
-        var element_occurence = false;
-
-        //per ogni elemento dell'array se non esiste un child con lo stesso id elimino la prenotazione
-        prenotation_ref.once('value', snap => {
-          snap.forEach(childSnap => {
-            if (childSnap.val() == prenotation_id[i]);
-            element_occurence = true;
-          });
-        }).then(() => {
-          if (element_occurence == false) {
-            p_list_ref.child(prenotation_id[i]).remove();
-          }
-        });
-      }
+      checkPrenotationInDate(date, )
 
       loadClassroomSchedule();
-      selected_hours = [];
-      cs_selected_rows = 0;
-      mb_selected_rows = 0;
-      $('#book_prenotation_btn').text('Book');
-      */
-      loadClassroomSchedule();
-      selected_hours = [];
       prenotation_id = [];
       cs_selected_rows = 0;
       mb_selected_rows = 0;
       $('#book_prenotation_btn').text('Book');
     }
   });
+
+  function checkPrenotationInDate (myDate, prenotation_id) {
+    var my_day = myDate.getDate();
+    var my_month = myDate.getMonth() + 1;
+    var my_year = myDate.getFullYear();
+
+    var prenotation_ref = firebase.database().ref('institute/'+INSTITUTE_ID+
+    '/prenotation/'+my_year+'/'+my_month+'/'+my_day+'/'+classroom_id+'/').once('value', snap => {
+      console.log(prenotation_id);
+    });
+  }
+
 
   $('.cs_back_btn').on('click', () => {
     cs_selected_rows = 0;
