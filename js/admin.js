@@ -1,4 +1,8 @@
 $(function () {
+     $(".administration_page_btn").on('click', () => {
+        showPage($("#administration_page"));
+    })
+    
   $("#admin_btn").on('click', () => {
     showPage($("#administration_page"));
   });
@@ -171,7 +175,7 @@ $(function () {
 
   function loadClassroomSelectList() {
     $('#select_classroom').empty();
-    $('#select_classroom').append('<option>Select a Classroom</option>');
+    $('#select_classroom').append('<option>Seleziona aula</option>');
     const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/classroom/');
     var classroomList = dbRef.on('value', snap => {
       snap.forEach(childSnap => {
@@ -185,7 +189,7 @@ $(function () {
 
   function loadClassSelectList() {
     $('#select_class').empty();
-    $('#select_class').append('<option>Select a Class</option>');
+    $('#select_class').append('<option>Seleziona classe</option>');
     const dbRef = firebase.database().ref('institute/' + INSTITUTE_ID + '/class/');
     var classList = dbRef.on('value', snap => {
       snap.forEach(childSnap => {

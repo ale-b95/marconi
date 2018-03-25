@@ -1,226 +1,342 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-      <meta charset="utf-8" />
-      <meta name="format-detection" content="telephone=no" />
-      <meta name="msapplication-tap-highlight" content="no" />
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-      <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    
+    
+    <head>
+        
+        
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
 
-      <script src="js/jquery-3.3.1.min.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
 
-      <link href="css/bootstrap.min.css" rel="stylesheet">
-      <link href="css/bootstrap-datepicker.min.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-datepicker.min.css" rel="stylesheet">
 
-      <link rel="stylesheet" type="text/css" href="css/index.css"/>
+        <link rel="stylesheet" type="text/css" href="css/index.css"/>
 
-      <title>Marconi</title>
-  </head>
+        <title>Marconi</title>
+    </head>
+    
+    
 
-  <body>
-      <div id="login" class="index collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Log In</h1>
-        <input id="lInEmail" class="form-control" type="email" placeholder="email">
-        <input id="lInPwd" class="form-control" type="password" placeholder="password">
-        <button class="btn btn-primary btn-lg" id="login_button" type="button">Log In</button>
-        <a class="btn btn-link btn-lg" id="signup_link">SignUp</a>
-      </div>
-
-      <div id="signup" class="collapse index">
-        <h1 class="h3 mb-3 font-weight-normal">SignUp</h1>
-        <input id="sUpName" class="form-control" type="text" placeholder="name">
-        <input id="sUpSurname" class="form-control" type="text" placeholder="surname">
-        <input id="sUpEmail"  class="form-control"type="email" placeholder="email">
-        <input id="sUpPwd" class="form-control" type="password" placeholder="password">
-        <input id="sUpPwdRep" class="form-control" type="password" placeholder="repeate password">
-        <button class="btn btn-lg btn-primary" id="signup_button" type="button">Sign Up</button>
-        <a class="btn btn-link btn-lg login_page_btn">LogIn</a>
-      </div>
-
-      <div id="user_page" class="collapse">
-        <p id="user_info">User: </p>
-        <button class="btn btn-lg btn-primary" id="log_institute_button" type="button">Log Institute</button>
-        <button class="btn btn-lg btn-primary" id="new_institute_button" type="button">New Institute</button>
-        <hr/>
-        <button class="btn btn-lg btn-primary" id="logout_button" type="button">Log Out</button>
-      </div>
-
-      <div id="new_institute" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">New Institute</h1>
-        <input id="nInstInstName" class="form-control" type="text" placeholder="institute name">
-        <button class="btn btn-primary btn-lg" id="create_institute_button" type="button">Create</button>
-        <hr/>
-        <button class="btn btn-primary btn-lg user_page_btn" type="button">Back</button>
-      </div>
-
-      <div id="log_institute" class="collapse center-block">
-       <select class="form-control" id="select_institute">
-         <option selected>Select Institute</option>
-         <optgroup label="My Institutes" id="my_institutes">
-         </optgroup>
-         <optgroup label="All Institutes" id="all_institutes">
-         </optgroup>
-       </select>
-       <br/>
-        <button class="btn btn-primary btn-lg" id="choose_inst" type="button">Log Institute</button>
-        <hr/>
-        <button class="btn btn-primary btn-lg user_page_btn" id="fromLItoUP" type="button">Back</button>
-      </div>
-
-      <div id="institute_page" class="collapse">
-        <p id="institute_info"></p>
-        <button id="schedule_btn" class="btn btn-primary btn-lg" type="button">Classrooms Schedule</button>
-        <button id="events_btn" class="btn btn-primary btn-lg" type="button">Events</button>
-        <button id="prenotations_btn" class="btn btn-primary btn-lg" type="button">Prenotations</button>
-        <hr/>
-        <button id="admin_btn" class="btn btn-primary btn-lg collapse" type="button">Administration</button>
-        <hr/>
-        <button class="btn btn-primary btn-lg user_page_btn" type="button">Back</button>
-      </div>
-
-      <div id="administration_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Administration</h1>
-        <button id="roles_and_permission_btn" class="btn btn-primary btn-lg" type="button">Roles and Permissions</button>
-        <button id="admin_classrooms_btn" class="btn btn-primary btn-lg" type="button">Classrooms</button>
-        <button id="admin_classes_btn" class="btn btn-primary btn-lg" type="button">Classes</button>
-        <button id="admin_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenotations</button>
-        <button id="admin_events_btn" class="btn btn-primary btn-lg" type="button">Events</button>
-        <hr/>
-        <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
-      </div>
-
-      <div id="roles_and_permission_page" class="collapse">
-        <table id="user_table" class="table table-fixed table-sm">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Enable</th>
-              <th>Admin</th>
-            </tr>
-          </thead>
-          <tbody id="user_table_body">
-          </tbody>
-        </table>
-        <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
-      </div>
-
-      <div id="admin_classrooms_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Classrooms</h1>
-        <table id="admin_classrooms_table" class="table table-fixed table-sm">
-          <thead>
-            <tr>
-              <th>Classroom</th>
-              <th>Capacity</th>
-            </tr>
-          </thead>
-          <tbody id="admin_classroom_table_body">
-          </tbody>
-        </table>
-        <hr/>
-        <form id="add_classroom_form">
-          <p>Add classroom</p>
-          <input id="classroom_name"  class="form-control" type="text" placeholder="classroom name">
-          <input id="classroom_capacity"  class="form-control"  type="number"  min="1" placeholder="capacity">
-          <button id="add_classroom_btn" type="button" class="btn btn-primary btn-lg btnsize">Add classroom</button>
-        </form>
-        <hr/>
-        <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
-      </div>
-
-      <div id="admin_classes_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Classes</h1>
-        <table id="admin_classes_table" class="table table-fixed table-sm">
-          <thead>
-            <tr>
-              <th>Class</th>
-              <th>Students</th>
-              <th>Remove</th>
-            </tr>
-          </thead>
-          <tbody id="admin_classes_table_body">
-          </tbody>
-        </table>
-        <form id="add_class_form">
-          <input id="class_name"  class="form-control" type="text" placeholder="class name">
-          <input id="n_of_students"  class="form-control"  type="number"  min="1" placeholder="number of sudents">
-          <button id="add_class_btn" type="button" class="btn btn-primary btn-lg btnsize">Add class</button>
-        </form>
-        <hr/>
-        <button class="btn btn-primary btn-lg institute_page_btn btnsize" type="button">Back</button>
-      </div>
-
-      <div id="schedule_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Classroom Schedule</h1>
-        <select class="form-control" id="select_classroom">
-        </select>
-        <br/>
-        <div id="classroom_datepicker" class="input-group date datepicker" data-provide="datepicker">
-          <input type="text" class="form-control" placeholder="Date">
-          <div class="input-group-addon">
-            <span class="glyphicon glyphicon-th"></span>
-          </div>
+    <body>
+        
+<!-- LOGIN -->
+        
+        <div id="login" class="index collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Accedi</h1>
+            
+            <input id="lInEmail" class="form-control" type="email" placeholder="email">
+            <input id="lInPwd" class="form-control" type="password" placeholder="password">
+            
+            <button class="btn btn-primary btn-lg" id="login_button" type="button">Accedi</button>
+            
+            <a class="btn btn-link btn-lg" id="signup_link">Registrati</a>            
         </div>
-        <hr/>
-        <table id="schedule_table" class="table table-fixed table-sm">
-          <thead>
-            <tr>
-              <th>Hour</th>
-              <th>Prenotation</th>
-            </tr>
-          </thead>
-          <tbody id="schedule_table_body">
-          </tbody>
-        </table>
-        <br/>
-        <select class="form-control" id="select_class">
-        </select>
-        <br/>
-        <button id="book_prenotation_btn" class="btn btn-primary btn-lg" type="button">Book</button>
-        <hr/>
-        <button class="btn btn-primary btn-lg institute_page_btn cs_back_btn" type="button">Back</button>
-      </div>
 
-      <div id="events_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Events</h1>
-        <hr/>
-        <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
-      </div>
+        
+        
+        <div id="signup" class="collapse index">
+            <h1 class="h3 mb-3 font-weight-normal">Registrati</h1>
+            
+            <input id="sUpName" class="form-control" type="text" placeholder="nome">
+            <input id="sUpSurname" class="form-control" type="text" placeholder="cognome">
+            <input id="sUpEmail"  class="form-control"type="email" placeholder="email">
+            <input id="sUpPwd" class="form-control" type="password" placeholder="password">
+            <input id="sUpPwdRep" class="form-control" type="password" placeholder="ripeti password">
+            
+            <button class="btn btn-lg btn-primary" id="signup_button" type="button">Registrati</button>
+            
+            <a class="btn btn-link btn-lg login_page_btn">Accedi</a>
+        </div>
 
-      <div id="prenotations_page" class="collapse">
-        <h1 class="h3 mb-3 font-weight-normal">Prenotations</h1>
-        <hr/>
-        <button class="btn btn-primary btn-lg institute_page_btn" type="button">Back</button>
-      </div>
+        
+        
+        <div id="user_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">MARCONI</h1>
+            
+            <p id="user_info">Utente: </p>
+            
+            <button class="btn btn-lg btn-primary" id="log_institute_button" type="button">Entra in istituto</button>
+            <button class="btn btn-lg btn-primary collapse" id="new_institute_button" type="button">Crea nuovo istituto</button>
+            <hr/>
+            <button class="btn btn-lg btn-primary" id="logout_button" type="button">Esci</button>
+        </div>
 
-      <script type='text/javascript' >
-        var INSTITUTE_ID = null;
-        var CURRENT_PAGE = null;
+        
+        
+        <div id="new_institute" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Nuovo istituto</h1>
+            
+            <input id="nInstInstName" class="form-control" type="text" placeholder="nome istituto">
+            <button class="btn btn-primary btn-lg" id="create_institute_button" type="button">Crea</button>
+            <hr/>
+            <button class="btn btn-primary btn-lg user_page_btn" type="button">Indietro</button>
+        </div>
+        
+        
+        
+        <div id="log_institute" class="collapse center-block">
+            <h1 class="h3 mb-3 font-weight-normal">Entra in istituto</h1>
+            
+            <select class="form-control" id="select_institute">
+                <option selected>Seleziona istituto</option>
+                <optgroup label="I miei istituti" id="my_institutes">
+                </optgroup>
+                <optgroup label="Tutti gli istituti" id="all_institutes">
+                </optgroup>
+            </select>
+            
+            <br/>
+            
+            <button class="btn btn-primary btn-lg" id="choose_inst" type="button">Entra</button>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg user_page_btn" id="fromLItoUP" type="button">Indietro</button>
+        </div>
 
-        var date = new Date();
+        
+        
+        <div id="institute_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Istituto</h1>
+            
+            <p id="institute_info"></p>
+            
+            <button id="schedule_btn" class="btn btn-primary btn-lg" type="button">Orari aule</button>
+            <button id="events_btn" class="btn btn-primary btn-lg" type="button">Eventi</button>
+            <button id="prenotations_btn" class="btn btn-primary btn-lg" type="button">Le mie prenotazioni</button>
+            
+            <hr/>
+            
+            <button id="admin_btn" class="btn btn-primary btn-lg collapse" type="button">Amministrazione</button>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg user_page_btn" type="button">Indietro</button>
+        </div>
 
-        function showPage(page) {
-          if (CURRENT_PAGE != null){
-            CURRENT_PAGE.hide();
-          }
-          CURRENT_PAGE = page;
-          CURRENT_PAGE.show();
-        }
-      </script>
+<!-- ADMIN -->
+        
+        <div id="administration_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Amministrazione</h1>
+            
+            <button id="roles_and_permission_btn" class="btn btn-primary btn-lg" type="button">Ruoli e permessi</button>
+            <button id="admin_classrooms_btn" class="btn btn-primary btn-lg" type="button">Aule</button>
+            <button id="admin_classes_btn" class="btn btn-primary btn-lg" type="button">Classi</button>
+            <button id="admin_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenotazioni</button>
+            <button id="admin_events_btn" class="btn btn-primary btn-lg" type="button">Eventi</button>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
+        </div>
 
-    <!--<script type="text/javascript" src="cordova.js"></script>-->
-    <script type="text/javascript" src="js/phonegapConfig.js"></script>
-    <script type="text/javascript">app.initialize();</script>
+        
+        
+        <div id="roles_and_permission_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Ruoli e permessi</h1>
+            
+            <table id="user_table" class="table table-fixed table-sm">
+                <thead>
+                    <tr>
+                        <th>Utente</th>
+                        <th>Abilitato</th>
+                        <th>Amministratore</th>
+                    </tr>
+                </thead>
+                <tbody id="user_table_body">
+                </tbody>
+            </table>
+            
+            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+        </div>
+        
+        
 
-    <script type="text/javascript" src="js/firebaseConfig.js"></script>
-    <script type="text/javascript" src="js/login.js"></script>
-    <script type="text/javascript" src="js/admin.js"></script>
-    <script type="text/javascript" src="js/mainApp.js"></script>
+        <div id="admin_classrooms_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Aule</h1>
+            
+            <table id="admin_classrooms_table" class="table table-fixed table-sm">
+                <thead>
+                <tr>
+                    <th>Aula</th>
+                    <th>Capacità</th>
+                </tr>
+                </thead>
+                <tbody id="admin_classroom_table_body">
+                </tbody>
+            </table>
+            
+            <hr/>
+            
+            <form id="add_classroom_form">
+                <p>Aggiungi nuova aula</p>
+                
+                <input id="classroom_name"  class="form-control" type="text" placeholder="nome aula">
+                <input id="classroom_capacity"  class="form-control"  type="number"  min="1" placeholder="capacità aula">
+                <button id="add_classroom_btn" type="button" class="btn btn-primary btn-lg btnsize">Invio</button>
+            </form>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+        </div>
+        
+        
 
-    <script src="js/popper.min.js"></script>
-    <script src="js/moment.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-datepicker.min.js"></script>
-  </body>
+        <div id="admin_classes_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Classi</h1>
+            
+            <table id="admin_classes_table" class="table table-fixed table-sm">
+                <thead>
+                    <tr>
+                        <th>Classe</th>
+                        <th>Studenti</th>
+                        <th>Rimuovi</th>
+                    </tr>
+                </thead>
+                <tbody id="admin_classes_table_body">
+                </tbody>
+            </table>
+            
+            <form id="add_class_form">
+                <p>Aggiungi nuova classe</p>
+                
+                <input id="class_name"  class="form-control" type="text" placeholder="nome classe">
+                <input id="n_of_students"  class="form-control"  type="number"  min="1" placeholder="numero studenti">
+                <button id="add_class_btn" type="button" class="btn btn-primary btn-lg btnsize">Invio</button>
+            </form>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+        </div>
+        
+        
+        
+        <div id="admin_prenotation_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Prenotazioni</h1>
+            
+            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+        </div>
+        
+        
+        
+        <div id="admin_events_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Eventi</h1>
+            
+            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+        </div>
+
+        
+<!-- MAIN APP -->
+        
+        <div id="schedule_page" class="collapse">
+            <h1 class="h3 mb-3 font-weight-normal">Orari aule</h1>
+            
+            <select class="form-control" id="select_classroom">
+            </select>
+            
+            <br/>
+            
+            <div id="classroom_datepicker" class="input-group date datepicker" data-provide="datepicker">
+                <input type="text" class="form-control" placeholder="Date">
+                <div class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+                </div>
+            </div>
+            
+            <hr/>
+            
+            <table id="schedule_table" class="table table-fixed table-sm">
+                <thead>
+                    <tr>
+                        <th>Ora</th>
+                        <th>Prenotazione</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule_table_body">
+                </tbody>
+            </table>
+            
+            <br/>
+            
+            <select class="form-control" id="select_class">
+            </select>
+            
+            <br/>
+            
+            <button id="book_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenota</button>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg institute_page_btn cs_back_btn" type="button">Indietro</button>
+        </div>
+
+        
+        
+        <div id="events_page" class="collapse">
+            
+            <h1 class="h3 mb-3 font-weight-normal">Eventi</h1>
+            
+            <p>TO DO</p>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
+        </div>
+
+        
+        
+        <div id="prenotations_page" class="collapse">
+            
+            <h1 class="h3 mb-3 font-weight-normal">Prenotazioni</h1>
+            
+            <p>TO DO</p>
+            
+            <hr/>
+            
+            <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
+        </div>
+
+        
+        
+        <script type='text/javascript' >
+            var INSTITUTE_ID = null;
+            var CURRENT_PAGE = null;
+
+            var date = new Date();
+
+            function showPage(page) {
+                if (CURRENT_PAGE != null) {
+                    CURRENT_PAGE.hide();
+                }
+                CURRENT_PAGE = page;
+                CURRENT_PAGE.show();
+            }
+        </script>
+
+        
+        
+        <!--<script type="text/javascript" src="cordova.js"></script>-->
+        <script type="text/javascript" src="js/phonegapConfig.js"></script>
+        <script type="text/javascript">app.initialize();</script>
+
+        <script type="text/javascript" src="js/firebaseConfig.js"></script>
+        <script type="text/javascript" src="js/login.js"></script>
+        <script type="text/javascript" src="js/admin.js"></script>
+        <script type="text/javascript" src="js/mainApp.js"></script>
+
+        <script src="js/popper.min.js"></script>
+        <script src="js/moment.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/bootstrap-datepicker.min.js"></script>
+    </body>
 </html>

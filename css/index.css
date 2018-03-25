@@ -4,66 +4,66 @@ html, body {
 }
 
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f5f5f5;
-  text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    text-align: center;
 }
 
 input {
-  margin-bottom: 4%;
+    margin-bottom: 4%;
 }
 
 .btn {
-  width: 100%;
-  margin-bottom: 4%;
+    width: 100%;
+    margin-bottom: 4%;
 }
 
 .selected_row {
-  background-color: lightblue;
+    background-color: lightblue;
 }
 
 .booked {
-  background-color: lightyellow;
+    background-color: lightyellow;
 }
 
 .mybook {
-  background-color: lightgreen;
+    background-color: lightgreen;
 }
 
 .mybook_selected {
-  background-color: red;
-  color: white;
+    background-color: red;
+    color: white;
 }
 
 div {
-  width: 60%;
+    width: 60%;
 }
 
 .form-control {
-  width: 100%;
+    width: 100%;
 }
 
 .btnsize {
-  width: 60%;
+    width: 60%;
 }
 
 #roles_and_permission_page, #admin_classrooms_page {
-  height: 90%;
-  width: 90%;
+    height: 90%;
+    width: 90%;
 }
 
 .table-fixed{
-  width: 100%;
-  align: center;
-
-  tbody{
-    overflow-y: auto;
     width: 100%;
+    align: center;
+
+    tbody{
+        overflow-y: auto;
+        width: 100%;
     }
 
-  thead,tbody,tr,td,th{
-    display:block;
-  }
+    thead,tbody,tr,td,th{
+        display:block;
+    }
 }

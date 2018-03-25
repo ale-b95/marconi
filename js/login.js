@@ -283,7 +283,7 @@ $(function () {
     /*
       ensure the value is valid
     */
-    if (inst_name != 'Select Institute') {
+    if (inst_name != 'Seleziona istituto') {
       /*
         if it is get database and user reference
       */
@@ -335,7 +335,7 @@ $(function () {
         }
       });
     } else {
-      alert('Select an institute');
+      alert('Seleziona un istituto');
     }
   }
 
@@ -363,7 +363,7 @@ $(function () {
       ref.once('value', snap => {
         snap.forEach(childSnap => {
           if (childSnap.key == 'name') {
-            $("#institute_info").text('Institute: ' + childSnap.val());
+            $("#institute_info").text('Istituto: ' + childSnap.val());
           }
         });
       });
