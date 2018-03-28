@@ -11,6 +11,27 @@ body {
     text-align: center;
 }
 
+.login {
+    margin-top: 45%;
+}
+
+.mainApp {
+     margin-top: 15%;
+}
+
+.admin {
+    margin-top: 20%;
+}
+
+.h3 {
+    margin-top: 4%;
+    margin-bottom: 3%;
+}
+
+.h4 {
+    margin-bottom: 8%;
+}
+
 input {
     margin-bottom: 4%;
 }
@@ -20,12 +41,16 @@ input {
     margin-bottom: 4%;
 }
 
+.back_btn {
+    margin-top: 6%;
+}
+
 /*TABLE*/
 
 .table {
-    margin-left: 15%;
-    width: 70%;
-    margin-bottom: 1%;
+    margin-left: 20%;
+    width: 60%;
+    margin-bottom: 7%;
 }
 
 .selected_row {
@@ -52,9 +77,15 @@ td .btn {
 }
 
 .table-fixed tbody {
- height: 200px;
- overflow-y: auto;
- width: 100%;
+    height: 150px;
+    overflow-y: auto;
+    width: 100%;
+    border: solid darkgray 1px;
+    border-radius: 5px;
+}
+
+.longtable {
+     height: 270px !important;
 }
 
 .table-fixed thead,
@@ -62,7 +93,11 @@ td .btn {
 .table-fixed tr,
 .table-fixed td,
 .table-fixed th {
- display: block;
+    display: block;
+}
+
+.table-fixed thead {
+    margin-top: 2%;
 }
 
 .three-columns-table tbody td, .three-columns-table thead > tr > th {

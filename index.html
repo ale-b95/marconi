@@ -25,7 +25,8 @@
         
 <!-- LOGIN -->
         
-        <div id="login" class="index collapse">
+        
+        <div id="login" class="index collapse login">
             <h1 class="h3 mb-3 font-weight-normal">Accedi</h1>
             
             <input id="lInEmail" class="form-control" type="email" placeholder="email">
@@ -38,7 +39,7 @@
 
         
         
-        <div id="signup" class="collapse index">
+        <div id="signup" class="collapse index login">
             <h1 class="h3 mb-3 font-weight-normal">Registrati</h1>
             
             <input id="sUpName" class="form-control" type="text" placeholder="nome">
@@ -54,7 +55,7 @@
 
         
         
-        <div id="user_page" class="collapse">
+        <div id="user_page" class="collapse login">
             <h1 class="h3 mb-3 font-weight-normal">MARCONI</h1>
             
             <p id="user_info">Utente: </p>
@@ -62,25 +63,23 @@
             <button class="btn btn-lg btn-primary" id="log_institute_button" type="button">Entra in istituto</button>
             <button class="btn btn-lg btn-primary collapse" id="new_institute_button" type="button">Crea nuovo istituto</button>
             
-            <hr/>
-            
-            <button class="btn btn-lg btn-primary" id="logout_button" type="button">Esci</button>
+            <button class="btn btn-lg btn-primary back_btn" id="logout_button" type="button">Esci</button>
         </div>
 
         
         
-        <div id="new_institute" class="collapse">
+        <div id="new_institute" class="collapse login">
             <h1 class="h3 mb-3 font-weight-normal">Nuovo istituto</h1>
             
             <input id="nInstInstName" class="form-control" type="text" placeholder="nome istituto">
             <button class="btn btn-primary btn-lg" id="create_institute_button" type="button">Crea</button>
-            <hr/>
-            <button class="btn btn-primary btn-lg user_page_btn" type="button">Indietro</button>
+
+            <button class="btn btn-primary btn-lg user_page_btn back_btn" type="button">Indietro</button>
         </div>
         
         
         
-        <div id="log_institute" class="collapse center-block">
+        <div id="log_institute" class="collapse center-block login">
             <h1 class="h3 mb-3 font-weight-normal">Entra in istituto</h1>
             
             <select class="form-control" id="select_institute">
@@ -95,53 +94,34 @@
             
             <button class="btn btn-primary btn-lg" id="choose_inst" type="button">Entra</button>
             
-            <hr/>
             
-            <button class="btn btn-primary btn-lg user_page_btn" id="fromLItoUP" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg user_page_btn back_btn" id="fromLItoUP" type="button">Indietro</button>
         </div>
 
-        
-        
-        <div id="institute_page" class="collapse">
-            <h1 class="h3 mb-3 font-weight-normal">Istituto</h1>
-            
-            <p id="institute_info"></p>
-            
-            <button id="schedule_btn" class="btn btn-primary btn-lg" type="button">Orari aule</button>
-            <button id="events_btn" class="btn btn-primary btn-lg" type="button">Eventi</button>
-            <button id="prenotations_btn" class="btn btn-primary btn-lg" type="button">Le mie prenotazioni</button>
-            
-            <hr/>
-            
-            <button id="admin_btn" class="btn btn-primary btn-lg collapse" type="button">Amministrazione</button>
-            
-            <hr/>
-            
-            <button class="btn btn-primary btn-lg user_page_btn" type="button">Indietro</button>
-        </div>
 
 <!-- ADMIN -->
         
-        <div id="administration_page" class="collapse">
+        
+        <div id="administration_page" class="collapse mainApp">
             <h1 class="h3 mb-3 font-weight-normal">Amministrazione</h1>
+            
+            <br/>
             
             <button id="roles_and_permission_btn" class="btn btn-primary btn-lg" type="button">Ruoli e permessi</button>
             <button id="admin_classrooms_btn" class="btn btn-primary btn-lg" type="button">Aule</button>
             <button id="admin_classes_btn" class="btn btn-primary btn-lg" type="button">Classi</button>
-            <button id="admin_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenotazioni</button>
-            <button id="admin_events_btn" class="btn btn-primary btn-lg" type="button">Eventi</button>
+            <button id="admin_prenotation_btn" class="btn btn-primary btn-lg disabled" type="button">Prenotazioni</button>
+            <button id="admin_events_btn" class="btn btn-primary btn-lg disabled" type="button">Eventi</button>
             
-            <hr/>
             
-            <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg institute_page_btn back_btn" type="button">Indietro</button>
         </div>
 
         
         
-        <div id="roles_and_permission_page" class="collapse">
+        <div id="roles_and_permission_page" class="collapse admin">
             <h1 class="h3 mb-3 font-weight-normal">Ruoli e permessi</h1>
-            
-            
+            <br/>
             <table id="user_table" class="table table-fixed three-columns-table table-sm">
                 <thead>
                     <tr>
@@ -150,19 +130,17 @@
                         <th>Admin</th>
                     </tr>
                 </thead>
-                <tbody id="user_table_body">
+                <tbody id="user_table_body" class="longtable">
                 </tbody>
             </table>
             
-            
-            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg administration_page_btn back_btn" type="button">Indietro</button>
         </div>
         
         
 
-        <div id="admin_classrooms_page" class="collapse">
+        <div id="admin_classrooms_page" class="collapse admin">
             <h1 class="h3 mb-3 font-weight-normal">Aule</h1>
-            
             
             <table id="admin_classrooms_table" class="table three-columns-table table-fixed table-sm">
                 <thead>
@@ -176,24 +154,18 @@
                 </tbody>
             </table>
             
-            <hr/>
-            
             <form id="add_classroom_form">
-                <p>Aggiungi nuova aula</p>
-                
                 <input id="classroom_name"  class="form-control" type="text" placeholder="nome aula">
                 <input id="classroom_capacity"  class="form-control"  type="number"  min="1" placeholder="capacità aula">
-                <button id="add_classroom_btn" type="button" class="btn btn-primary btn-lg btnsize">Invio</button>
+                <button id="add_classroom_btn" type="button" class="btn btn-primary btn-lg">Aggiungi Aula</button>
             </form>
             
-            <hr/>
-            
-            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg administration_page_btn back_btn" type="button">Indietro</button>
         </div>
         
         
 
-        <div id="admin_classes_page" class="collapse">
+        <div id="admin_classes_page" class="collapse admin">
             <h1 class="h3 mb-3 font-weight-normal">Classi</h1>
             
             <table id="admin_classes_table" class="table three-columns-table table-fixed table-sm">
@@ -209,38 +181,54 @@
             </table>
             
             <form id="add_class_form">
-                <p>Aggiungi nuova classe</p>
                 
                 <input id="class_name"  class="form-control" type="text" placeholder="nome classe">
                 <input id="n_of_students"  class="form-control"  type="number"  min="1" placeholder="numero studenti">
-                <button id="add_class_btn" type="button" class="btn btn-primary btn-lg btnsize">Invio</button>
+                <button id="add_class_btn" type="button" class="btn btn-primary btn-lg">Aggiungi classe</button>
             </form>
             
-            <hr/>
-            
-            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg administration_page_btn back_btn" type="button">Indietro</button>
         </div>
         
         
         
-        <div id="admin_prenotation_page" class="collapse">
+        <div id="admin_prenotation_page" class="collapse admin">
             <h1 class="h3 mb-3 font-weight-normal">Prenotazioni</h1>
             
-            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg administration_page_btn back_btn" type="button">Indietro</button>
         </div>
         
         
         
-        <div id="admin_events_page" class="collapse">
+        <div id="admin_events_page" class="collapse admin">
             <h1 class="h3 mb-3 font-weight-normal">Eventi</h1>
             
-            <button class="btn btn-primary btn-lg administration_page_btn btnsize" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg administration_page_btn back_btn" type="button">Indietro</button>
         </div>
 
         
 <!-- MAIN APP -->
         
-        <div id="schedule_page" class="collapse">
+        
+        <div id="institute_page" class="collapse admin">
+            <h1 class="h3 mb-3 font-weight-normal">Istituto</h1>
+            
+            <p id="institute_info" class="h4 mb-3 font-weight-normal"></p>
+            
+            <button id="schedule_btn" class="btn btn-primary btn-lg" type="button">Orari aule</button>
+            <button id="events_btn" class="btn btn-primary btn-lg disabled" type="button">Eventi</button>
+            <button id="prenotations_btn" class="btn btn-primary btn-lg disabled" type="button">Le mie prenotazioni</button>
+            
+            
+            <button id="admin_btn" class="btn btn-primary btn-lg collapse back_btn" type="button">Amministrazione</button>
+            
+            
+            <button class="btn btn-primary btn-lg user_page_btn back_btn" type="button">Indietro</button>
+        </div>
+        
+        
+        
+        <div id="schedule_page" class="collapse mainApp">
             <h1 class="h3 mb-3 font-weight-normal">Orari aule</h1>
             
             <div id="classroom_datepicker" class="input-group date datepicker" data-provide="datepicker">
@@ -269,37 +257,29 @@
             
             <button id="book_prenotation_btn" class="btn btn-primary btn-lg" type="button">Prenota</button>
             
-            <hr/>
-            
-            <button class="btn btn-primary btn-lg institute_page_btn cs_back_btn" type="button">Indietro</button>
+            <button class="btn btn-primary btn-lg institute_page_btn cs_back_btn back_btn" type="button">Indietro</button>
         </div>
 
         
         
-        <div id="events_page" class="collapse">
+        <div id="events_page" class="collapse mainApp">
             
             <h1 class="h3 mb-3 font-weight-normal">Eventi</h1>
             
-            <p>TO DO</p>
-            
-            <hr/>
-            
             <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
         </div>
 
         
         
-        <div id="prenotations_page" class="collapse">
+        <div id="prenotations_page" class="collapse mainApp">
             
             <h1 class="h3 mb-3 font-weight-normal">Prenotazioni</h1>
             
-            <p>TO DO</p>
-            
-            <hr/>
-            
             <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
         </div>
 
+        
+ <!-- SCRIPT -->
         
         
         <script type='text/javascript' >
@@ -317,7 +297,6 @@
             }
         </script>
 
-        
         
         <!--<script type="text/javascript" src="cordova.js"></script>-->
         <script type="text/javascript" src="js/phonegapConfig.js"></script>

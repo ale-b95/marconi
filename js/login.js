@@ -144,7 +144,9 @@ $(function () {
         dbRef.child('institute/' + INSTITUTE_ID + '/user/' + USER.uid).once('value',snap => {
           snap.forEach(childSnap => {
             if (childSnap.key == 'confirmed' && childSnap.val() == true) {
-              goInstitutePage();
+                goInstitutePage();
+            } else  {
+                goUserPage();
             }
           });
         });
@@ -331,7 +333,7 @@ $(function () {
           goInstitutePage();
         } else {
           goUserPage();
-          alert("Waiting Confirmation: Contact an institute admin to get access.")
+          alert("Non hai i permessi necessari per accedere a questo istituto. Contatta gli amministratori per richiedere l'accesso.");
         }
       });
     } else {
@@ -363,7 +365,7 @@ $(function () {
       ref.once('value', snap => {
         snap.forEach(childSnap => {
           if (childSnap.key == 'name') {
-            $("#institute_info").text('Istituto: ' + childSnap.val());
+            $("#institute_info").text(childSnap.val());
           }
         });
       });

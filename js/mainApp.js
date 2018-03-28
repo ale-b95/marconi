@@ -131,17 +131,18 @@ $(function () {
         mb_selected_rows += x;
         
         if (mb_selected_rows > 0) {
-            $('#book_prenotation_btn').text('Cancel');
+            $('#book_prenotation_btn').text('Rimuovi');
         } else {
-            $('#book_prenotation_btn').text('Book');
+            $('#book_prenotation_btn').text('Prenota');
         }
     }
 
     $('#book_prenotation_btn').on('click', () => {
-        user = firebase.auth().currentUser;
+        var today = Date.now() - (24*3600*1000);
+        user = firebase.auth().currentUser;        
         var class_name = $("#select_class").find(':selected').text();
         
-        if (class_name && class_name != 'Seleziona classe' && cs_selected_rows > 0) {
+        if (class_name && class_name != 'Seleziona classe' && cs_selected_rows > 0 && date >= today) {
             
             for (var i = 0; i < selected_hours.length; i++) {            
                 firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/'+selected_hours[i]+'/').set({
@@ -171,6 +172,8 @@ $(function () {
             cs_selected_rows = 0;
             mb_selected_rows = 0;
             $('#book_prenotation_btn').text('Prenota');
+        } else if (date < today) {
+            alert('ERRORE: modifica retroattiva');
         }
     });
 
@@ -180,4 +183,6 @@ $(function () {
         $('#book_prenotation_btn').text('Prenota');
         selected_hours = [];
     });
+    
+    
 });

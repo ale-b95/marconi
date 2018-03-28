@@ -38,11 +38,11 @@ $(function () {
     });
 
     $("#events_btn").on('click', () => {
-        showPage($("#events_page"));
+        //showPage($("#events_page"));
     });
 
     $("#prenotations_btn").on('click', () => {
-        showPage($("#prenotations_page"));
+        //showPage($("#prenotations_page"));
     });
 
     loadClassList();
