@@ -37,14 +37,6 @@ $(function () {
         showPage($("#schedule_page"));
     });
 
-    $("#events_btn").on('click', () => {
-        //showPage($("#events_page"));
-    });
-
-    $("#prenotations_btn").on('click', () => {
-        //showPage($("#prenotations_page"));
-    });
-
     loadClassList();
 
     function loadUsersList() {

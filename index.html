@@ -216,7 +216,7 @@
             <p id="institute_info" class="h4 mb-3 font-weight-normal"></p>
             
             <button id="schedule_btn" class="btn btn-primary btn-lg" type="button">Orari aule</button>
-            <button id="events_btn" class="btn btn-primary btn-lg disabled" type="button">Eventi</button>
+            <button id="events_btn" class="btn btn-primary btn-lg" type="button">Eventi</button>
             <button id="prenotations_btn" class="btn btn-primary btn-lg disabled" type="button">Le mie prenotazioni</button>
             
             
@@ -232,7 +232,7 @@
             <h1 class="h3 mb-3 font-weight-normal">Orari aule</h1>
             
             <div id="classroom_datepicker" class="input-group date datepicker" data-provide="datepicker">
-                <input type="text" class="form-control" placeholder="Date">
+                <input type="text" class="form-control" placeholder="Data">
                 <div class="input-group-addon">
                 <span class="glyphicon glyphicon-th"></span>
                 </div>
@@ -266,7 +266,53 @@
             
             <h1 class="h3 mb-3 font-weight-normal">Eventi</h1>
             
-            <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
+            <div id="main_events_page">
+                
+                <div id="events_show_datepicker" class="input-group date datepicker" data-provide="datepicker">
+                    <input type="text" class="form-control" placeholder="Mese">
+                    <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
+            
+                <div class="list-group center-std-element">
+                    <a href="#" class="list-group-item">Evento 1</a>
+                    <a href="#" class="list-group-item">Evento 2</a>
+                    <a href="#" class="list-group-item">Evento 3</a>
+                </div> 
+                
+                <button id="new_event_btn" class="btn btn-primary btn-lg" type="button">Nuovo Evento</button>
+            
+                <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
+            </div>
+            
+            <div id="new_event_page" class="collapse">
+                
+                <div id="events_create_datepicker" class="input-group date datepicker" data-provide="datepicker">
+                    <input type="text" class="form-control" placeholder="Data">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
+                
+                <select id="select_event_classroom" class="form-control" placeholder="Seleziona classe">
+                </select>
+                
+                <table id="schedule_event_table" class="table two-columns-table table-fixed table-sm">
+                    <thead>
+                        <tr>
+                            <th>Ora</th>
+                            <th>Prenotazione</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule_event_table_body">
+                    </tbody>
+                </table>
+            
+                <button id="event_creation_btn" class="btn btn-primary btn-lg" type="button">Crea Evento</button>
+                
+                <button id="abort_event_btn" class="btn btn-primary btn-lg" type="button">Annulla</button>
+            </div>
         </div>
 
         
@@ -305,7 +351,8 @@
         <script type="text/javascript" src="js/firebaseConfig.js"></script>
         <script type="text/javascript" src="js/login.js"></script>
         <script type="text/javascript" src="js/admin.js"></script>
-        <script type="text/javascript" src="js/mainApp.js"></script>
+        <script type="text/javascript" src="js/cr_schedule.js"></script>
+        <script type="text/javascript" src="js/events.js"></script>
 
         <script src="js/popper.min.js"></script>
         <script src="js/moment.min.js"></script>
