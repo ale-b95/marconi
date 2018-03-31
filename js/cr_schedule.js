@@ -32,28 +32,29 @@ $(function () {
     });
 
     $('#schedule_table').on('click', '.clickable-row', function(event) {
+        var idx;
 
-    if ($(this).hasClass('selected_row')) {
-        $(this).removeClass('selected_row');
-        idx = selected_hours.indexOf($(this).attr('value'));
-        if (idx >= 0) selected_hours.splice(idx, 1);
-        cs_selected_rows--;
-    } else if (!$(this).hasClass('selected_row') && !$(this).hasClass('mybook') && mb_selected_rows == 0 ) {
-        $(this).addClass('selected_row');
-        selected_hours.push($(this).attr('value'));
-        cs_selected_rows++;
-    } else if ($(this).hasClass('mybook') && cs_selected_rows == 0) {
-        $(this).addClass('mybook_selected');
-        $(this).removeClass('mybook');
-        selected_hours.push($(this).attr('value'));
-        increase_mb_select(+1);
-    } else if ($(this).hasClass('mybook_selected')) {
-        $(this).removeClass('mybook_selected');
-        $(this).addClass('mybook');
-        idx = selected_hours.indexOf($(this).attr('value'));
+        if ($(this).hasClass('selected_row')) {
+            $(this).removeClass('selected_row');
+            idx = selected_hours.indexOf($(this).attr('value'));
+            if (idx >= 0) selected_hours.splice(idx, 1);
+            cs_selected_rows--;
+        } else if (!$(this).hasClass('selected_row') && !$(this).hasClass('mybook') && mb_selected_rows == 0 && !$(this).hasClass('event_prenotation')) {
+            $(this).addClass('selected_row');
+            selected_hours.push($(this).attr('value'));
+            cs_selected_rows++;
+        } else if ($(this).hasClass('mybook') && cs_selected_rows == 0) {
+            $(this).addClass('mybook_selected');
+            $(this).removeClass('mybook');
+            selected_hours.push($(this).attr('value'));
+            increase_mb_select(+1);
+        } else if ($(this).hasClass('mybook_selected')) {
+            $(this).removeClass('mybook_selected');
+            $(this).addClass('mybook');
+            idx = selected_hours.indexOf($(this).attr('value'));
 
-        if (idx >= 0) selected_hours.splice(idx, 1);
-            increase_mb_select(-1);
+            if (idx >= 0) selected_hours.splice(idx, 1);
+                increase_mb_select(-1);
         }
     });
 
@@ -68,8 +69,6 @@ $(function () {
                 firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/'+selected_hours[i]+'/').set({
                 class : class_name,
                 classroom : classroom_name,
-                classroom_key : classroom_id,
-                date : date,
                 teacher : user.displayName,
                 teacher_key : user.uid
                 });
@@ -104,6 +103,7 @@ $(function () {
         mb_selected_rows = 0;
         $('#book_prenotation_btn').text('Prenota');
         selected_hours = [];
+        $("#schedule_table_body").empty();
     });
     
     function loadClassroomSchedule() {
@@ -125,15 +125,15 @@ $(function () {
                 '</tr>');
             }
             
-            
             var pRef = firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/');
             pRef.once('value', snap => {
                 var hour;
                 var teacher_name;
                 var class_name;
-                var event_name;
-                var teacher_id;
+                var event_title;
+                var event_key;
                 var second_column;
+                var teacher_id;
                 
                 snap.forEach(childSnap => {
                     hour = childSnap.key;
@@ -142,29 +142,38 @@ $(function () {
                         if (gcSnap.key == 'teacher') {
                             teacher_name = gcSnap.val();
                         } else if (gcSnap.key == 'event') {
-                            event_name = gcSnap.val();
+                            event_title = gcSnap.val();
                         } else if (gcSnap.key == 'class') {
                             class_name =  gcSnap.val();
+                        } else if (gcSnap.key == 'event_key') {
+                            event_key = gcSnap.val();
                         } else if (gcSnap.key == 'teacher_key') {
                             teacher_id = gcSnap.val();
                         }
                     }); 
 
-                    if (event_name) {
-                        second_column = event_name;
+                    if (event_title) {
+                        second_column = event_title;
                     } else {
                         second_column = class_name + ' ' + teacher_name;
                     }
 
                     $("#hid_"+hour).empty();
                     $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
-                    user = firebase.auth().currentUser;
                     
-                    if (user.uid == teacher_id){
-                        $("#hid_"+hour).addClass('mybook');
+                    if (event_key) {
+                        alert('')
+                        $("#hid_"+hour).addClass('event_prenotation');
+                        $("#hid_"+hour).val(event_key);              
                     } else {
-                        $("#hid_"+hour).addClass('booked');
-                        $("#hid_"+hour).removeClass('clickable-row');
+                        user = firebase.auth().currentUser;
+                    
+                        if (user.uid == teacher_id){
+                            $("#hid_"+hour).addClass('mybook');
+                        } else {
+                            $("#hid_"+hour).addClass('booked');
+                            $("#hid_"+hour).removeClass('clickable-row');
+                        }
                     }
                 });
             });

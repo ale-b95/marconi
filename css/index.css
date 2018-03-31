@@ -70,6 +70,10 @@ input {
     color: white;
 }
 
+.event_prenotation {
+     background-color: greenyellow;
+}
+
 
 td .btn {
     height:30px;
