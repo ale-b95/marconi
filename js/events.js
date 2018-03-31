@@ -131,16 +131,17 @@ $(function () {
             
             var pRef = firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/');
             pRef.once('value', snap => {
-                var hour;
-                var teacher_name;
-                var class_name;
-                var event_title;
-                var teacher_id;
-                var event_key;
-                var second_column;
+                
                 
                 snap.forEach(childSnap => {
-                    hour = childSnap.key;
+                    var hour = childSnap.key;
+                    var hour;
+                    var teacher_name;
+                    var class_name;
+                    var event_title;
+                    var teacher_id;
+                    var event_key;
+                    var second_column;
                     childSnap.forEach(gcSnap => {
                         
                         if (gcSnap.key == 'teacher') {
@@ -170,7 +171,7 @@ $(function () {
                     $("#hid_"+hour).empty();
                     $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
                     
-                    if (event_key) {
+                    if (event_title) {
                         $("#hid_"+hour).addClass('event_prenotation');
                         $("#hid_"+hour).val(event_key);              
                     } else {
