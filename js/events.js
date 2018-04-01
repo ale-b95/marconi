@@ -1,5 +1,26 @@
 $(function () {
+
+/*********************** show events ***********************/
+    var year;
+    var month;
     
+    $('#events_show_datepicker').on('changeMonth', (e) => {
+        year = String(e.date).split(" ")[3];
+        month = new Date(e.date).getMonth() + 1;
+        
+        var startdate = new Date(year+ '-' + month);
+        var enddate = new Date(startdate);
+        enddate.setMonth(enddate.getMonth() + 1);
+        console.log(startdate + ' | ' + enddate);
+        loadEventList(startdate, enddate);
+    });
+    
+    function loadEventList(startdate, enddate) {
+        
+         
+    }
+    
+/************************ new event ************************/
     const eventTitle = $('#event_title')[0];
     
     //get date informations
@@ -82,7 +103,7 @@ $(function () {
                 title : eventTitle.value,
                 classroom : classroom_name,
                 classroom_key : classroom_id,
-                date : day + '/' + month + '/' + year,
+                date : date.getTime(),
                 teacher : user.displayName,
                 teacher_key : user.uid,
                 starting_hour : selected_hours[0]
