@@ -11,12 +11,24 @@ $(function () {
         var startdate = new Date(year+ '-' + month);
         var enddate = new Date(startdate);
         enddate.setMonth(enddate.getMonth() + 1);
-        console.log(startdate + ' | ' + enddate);
         loadEventList(startdate, enddate);
+        
     });
     
     function loadEventList(startdate, enddate) {
+        $('#event_list').empty();
         
+        var ref = firebase.database().ref('institute/'+INSTITUTE_ID+'/event/');
+        ref.orderByChild("date").startAt(startdate.getTime()).endAt(enddate.getTime())
+          .once("value", snap => {
+            snap.forEach(childSnap => {
+                childSnap.forEach(gcSnap => {
+                    if (gcSnap.key == 'title') {
+                        $('#event_list').append('<a class="list-group-item">'+ gcSnap.val() +'</a>');     
+                    }
+                });
+            });
+          });
          
     }
     
