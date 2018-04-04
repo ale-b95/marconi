@@ -74,7 +74,6 @@ input {
      background-color: greenyellow;
 }
 
-
 td .btn {
     height:30px;
     width:50px;
@@ -152,3 +151,7 @@ td .btn {
     margin-top: 5%;
 }
 
+.event_detail {
+    text-align: left;
+    margin-left: 10%;
+}

@@ -4,6 +4,17 @@ $(function () {
     var year;
     var month;
     
+    $('#events_show_datepicker').datepicker({
+        format: 'mm/yyyy',
+        language: "it",
+        autoclose: true,
+        todayHighlight: true,
+        toggleActive: true,
+        viewMode: "months", 
+        minViewMode: "months"
+    });
+    
+    
     $('#events_show_datepicker').on('changeMonth', (e) => {
         year = String(e.date).split(" ")[3];
         month = new Date(e.date).getMonth() + 1;
@@ -15,21 +26,94 @@ $(function () {
         
     });
     
+    $("#abort_delete").on('click', () => {
+        $("#delete_event").addClass('btn-primary');
+        $("#delete_event").removeClass('btn-danger');
+        $("#delete_event").text('Elimina evento');
+        $("#abort_delete").slideUp();
+    });   
+    
+    $("#back_to_main_event").on('click', () => {
+        $('#event_details').hide();
+        $('#main_events_page').show();
+    });
+    
+    $("#save_event").on('click', () => {
+        // TODO salva evento negli eventi/prenotazioni personali
+    });
+    
     function loadEventList(startdate, enddate) {
         $('#event_list').empty();
         
         var ref = firebase.database().ref('institute/'+INSTITUTE_ID+'/event/');
         ref.orderByChild("date").startAt(startdate.getTime()).endAt(enddate.getTime())
-          .once("value", snap => {
+        .once("value", snap => {
             snap.forEach(childSnap => {
+                
+                var title;
+                var date;
+                var hour;
+                var teacher;
+                var classroom;
+                var teacher_key;
+                
                 childSnap.forEach(gcSnap => {
                     if (gcSnap.key == 'title') {
-                        $('#event_list').append('<a class="list-group-item">'+ gcSnap.val() +'</a>');     
+                        $('#event_list').append('<button type="button" id="ed_'+childSnap.key+'" class="list-group-item"">'+ gcSnap.val() +'</button>');
+                        
+                        title = gcSnap.val();
+                    } else if (gcSnap.key == 'date') {
+                        date = new Date(gcSnap.val());
+                    } else if (gcSnap.key == 'starting_hour') {
+                        hour = gcSnap.val();
+                    } else if (gcSnap.key == 'teacher') {
+                        teacher = gcSnap.val();
+                    } else if (gcSnap.key == 'classroom') {
+                        classroom = gcSnap.val();
+                    } else if (gcSnap.key == 'teacher_key') {
+                        teacher_key = gcSnap.val();
                     }
                 });
+                
+                
+                $("#ed_"+childSnap.key+"").on('click', () => {
+                    
+                    $("#ed_title").text(title);
+                    
+                    $("#ed_date").text('Data evento: '+date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear());
+                    
+                    $("#ed_starting_hour").text('Ora di inizio: '+hour);
+                    
+                    $("#ed_organizer").text('Organizzatore: '+teacher);
+                    
+                    $("#ed_classroom").text('Luogo evento: '+classroom);
+                    
+                    if (firebase.auth().currentUser.uid == teacher_key) {
+                        
+                        $("#delete_event").on('click', () => {
+                            deleteEvent(childSnap.key);
+                        });
+                        
+                        $("#delete_event").show();
+                    }
+                    
+                    $('#main_events_page').hide();
+                    
+                    $('#event_details').show();
+                });
             });
-          });
-         
+        });
+    }
+    
+    function deleteEvent(event_key) {
+        if ($("#delete_event").hasClass('btn-primary')) {
+            $("#delete_event").addClass('btn-danger');
+            $("#delete_event").removeClass('btn-primary');
+            $("#delete_event").text('Conferma eliminazione');
+            $("#abort_delete").slideDown();
+        } else if ($("#delete_event").hasClass('btn-danger')) {
+            //TODO elimina evento e prenotazioni associate
+        }
     }
     
 /************************ new event ************************/
@@ -53,16 +137,6 @@ $(function () {
         todayHighlight: true,
         toggleActive: true,
         daysOfWeekHighlighted: "0"
-    });
-    
-    $('#events_show_datepicker').datepicker({
-        format: 'mm/yyyy',
-        language: "it",
-        autoclose: true,
-        todayHighlight: true,
-        toggleActive: true,
-        viewMode: "months", 
-        minViewMode: "months"
     });
     
     $('#events_create_datepicker').on('changeDate', () => {
@@ -160,7 +234,6 @@ $(function () {
                 '<th>'+hour+':00</th><td></td>'+
                 '</tr>');
             }
-            
             
             var pRef = firebase.database().ref('institute/'+INSTITUTE_ID+'/prenotation/'+year+'/'+month+'/'+day+'/'+classroom_id+'/');
             pRef.once('value', snap => {
