@@ -41,6 +41,7 @@ $(function () {
         $("#schedule_event_table_body").empty();
         loadClassroomSelectList("select_event_classroom");
         loadClassSelectList("select_event_class");
+        loadClassSelectList("event_class");
         showPage($("#events_page"));
     });
 
