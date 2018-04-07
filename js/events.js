@@ -1,7 +1,6 @@
 $(function () {
-
+    
 /************************ show events ************************/
-
     var year;
     var month;
     var startdate;
@@ -119,6 +118,12 @@ $(function () {
                                 event_date : event_date.getDate() + '/' + (event_date.getMonth() + 1) + '/' + event_date.getFullYear()
                             });
                             
+                            alert('Prenotazione effettuata');
+                            loadEventList();
+                            
+                            $('#event_details').hide();
+                            $('#main_events_page').show();
+                            
                         } else {
                             alert ('Seleziona una classe');
                         }
@@ -168,17 +173,12 @@ $(function () {
     }
     
 /************************ new event ************************/
+    
     const eventTitle = $('#event_title')[0];
-    
-    //get date informations
-    var date;
-    
-    //get classroom informations
+    var ne_date;
     var classroom_name;
     var classroom_id;
-    
     var cs_selected_rows = 0;
-
     var selected_hours = [];
     
     $('#events_create_datepicker').datepicker({
@@ -197,7 +197,7 @@ $(function () {
     });
     
     $("#select_event_classroom").on('change', () => {
-        if (date) {
+        if (ne_date) {
             loadClassroomSchedule();
         }
     });
@@ -205,6 +205,8 @@ $(function () {
     $('#new_event_btn').on('click', () => {
         $('#main_events_page').hide();
         $('#new_event_page').show();
+        $("#events_create_datepicker").datepicker("update", null);
+        $('#event_title').text('');
     });
     
     $('#abort_event_btn').on('click', () => {
@@ -235,12 +237,12 @@ $(function () {
         var today = Date.now() - (24*3600*1000);
         user = firebase.auth().currentUser;
         
-        if (cs_selected_rows > 0 && date >= today && classroom_name != "Seleziona aula" && eventTitle.value != "") {
+        if (cs_selected_rows > 0 && ne_date >= today && classroom_name != "Seleziona aula" && eventTitle.value != "") {
             var event_prenotation = firebase.database().ref('institute/'+INSTITUTE_ID+'/event/').push({
                 title : eventTitle.value,
                 classroom : classroom_name,
                 classroom_key : classroom_id,
-                date : date.getTime(),
+                date : ne_date.getTime(),
                 teacher : user.displayName,
                 teacher_key : user.uid,
                 starting_hour : selected_hours[0]
@@ -267,21 +269,26 @@ $(function () {
             
         } else if (classroom_name == 'Seleziona aula') {
             alert ("Seleziona un'aula");
-        } else if (date < today) {
+        } else if (ne_date < today) {
             alert('ERRORE: Non possono essere effettuate modifiche per la data selezionata.');
         }
     });
     
     function loadClassroomSchedule() {
-        date = $("#events_create_datepicker").datepicker('getDate');
-        day = date.getDate();
-        month = date.getMonth() + 1;
-        year = date.getFullYear();
+        ne_date = $("#events_create_datepicker").datepicker('getDate');
+        day = ne_date.getDate();
+        month = ne_date.getMonth() + 1;
+        year = ne_date.getFullYear();
+        
+        if (ne_date == null) {
+            $("#events_create_datepicker").datepicker("update", new Date());
+            ne_date = $("#events_create_datepicker").datepicker('getDate');
+        }
         
         classroom_id = $("#select_event_classroom").val();
         classroom_name = $("#select_event_classroom").find(':selected').text();
         
-        if (classroom_id != 'Seleziona aula' && date) {
+        if (classroom_id != 'Seleziona aula') {
             $("#schedule_event_table_body").empty();
             
             for (var hour = 8; hour<16; hour++) {

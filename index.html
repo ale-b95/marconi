@@ -217,7 +217,7 @@
             
             <button id="schedule_btn" class="btn btn-primary btn-lg" type="button">Orari aule</button>
             <button id="events_btn" class="btn btn-primary btn-lg" type="button">Eventi</button>
-            <button id="prenotations_btn" class="btn btn-primary btn-lg disabled" type="button">Prenotazioni</button>
+            <button id="prenotations_btn" class="btn btn-primary btn-lg" type="button">Prenotazioni</button>
             
             
             <button id="admin_btn" class="btn btn-primary btn-lg collapse back_btn" type="button">Amministrazione</button>
@@ -344,7 +344,16 @@
         <div id="prenotations_page" class="collapse mainApp">
             
             <h1 class="h3 mb-3 font-weight-normal">Prenotazioni</h1>
-            
+            <select class="form-control" id="select_prenotations">
+            </select>
+            <!--<select class="form-control" id="select_time_frame">
+                <option>Questa settimana</option>
+                <option>Questo mese</option>
+                <option>Tutte le prenotazioni</option>
+            </select>-->
+            <div id="prenotations_list" class="list-group center-std-element">
+            </div>
+            <button id="prenotation_btn" class="btn btn-primary btn-lg" type="button">Visualizza</button>
             <button class="btn btn-primary btn-lg institute_page_btn" type="button">Indietro</button>
         </div>
 
@@ -376,8 +385,10 @@
         <script type="text/javascript" src="js/firebaseConfig.js"></script>
         <script type="text/javascript" src="js/login.js"></script>
         <script type="text/javascript" src="js/admin.js"></script>
-        <script type="text/javascript" src="js/cr_schedule.js"></script>
+        <script type="text/javascript" src="js/schedule.js"></script>
         <script type="text/javascript" src="js/events.js"></script>
+        <script type="text/javascript" src="js/prenotations.js"></script>
+        <script type="text/javascript" src="js/institute_page.js"></script>
 
         <script src="js/popper.min.js"></script>
         <script src="js/moment.min.js"></script>
