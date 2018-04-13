@@ -37,10 +37,10 @@ $(function () {
         $('#main_events_page').show();
     });
     
-    $("#save_event").on('click', () => {
-        // TODO salva evento negli eventi/prenotazioni personali
-    });
     
+    /*
+        Fill the list with the events of the selected month
+    */
     function loadEventList() {
         
         $('#event_list').empty();
@@ -88,6 +88,11 @@ $(function () {
                     }
                 });
                 
+                /*
+                    Attach a listener for each event listed to retrive the informations about the event,
+                    add a class to partecipate or (if the user created the event or has admin privileges)
+                    remove the event.
+                */
                 $("#ed_"+childSnap.key+"").on('click', () => {
                     $('#event_list').empty();
                     $("#ed_title").text(title);
@@ -109,20 +114,16 @@ $(function () {
                         var class_name = $("#event_class").find(':selected').text();
                         
                         if (class_name != 'Seleziona classe') {
-                            firebase.database().ref('institute/'+INSTITUTE_ID+'/user/'+user.uid+'/prenotation/'+event_key+'/').set({
-                                title : title,
-                                event_date : event_date.getDate() + '/' + (event_date.getMonth() + 1) + '/' + event_date.getFullYear()
-                            });
                             firebase.database().ref('institute/'+INSTITUTE_ID+'/class/'+class_name+'/event/'+event_key+'/').set({
                                 title : title,
                                 event_date : event_date.getDate() + '/' + (event_date.getMonth() + 1) + '/' + event_date.getFullYear()
+                            }).then(() => {
+                                alert('Prenotazione effettuata');
+                                loadEventList();
+                                $('#event_details').hide();
+                                $('#main_events_page').show();
                             });
                             
-                            alert('Prenotazione effettuata');
-                            loadEventList();
-                            
-                            $('#event_details').hide();
-                            $('#main_events_page').show();
                             
                         } else {
                             alert ('Seleziona una classe');
@@ -173,7 +174,6 @@ $(function () {
     }
     
 /************************ new event ************************/
-    
     const eventTitle = $('#event_title')[0];
     var ne_date;
     var classroom_name;
@@ -237,7 +237,7 @@ $(function () {
         var today = Date.now() - (24*3600*1000);
         user = firebase.auth().currentUser;
         
-        if (cs_selected_rows > 0 && ne_date >= today && classroom_name != "Seleziona aula" && eventTitle.value != "") {
+        if (cs_selected_rows > 0 && ne_date >= today &&  eventTitle.value != "") {
             var event_prenotation = firebase.database().ref('institute/'+INSTITUTE_ID+'/event/').push({
                 title : eventTitle.value,
                 classroom : classroom_name,
@@ -267,8 +267,6 @@ $(function () {
             $('#main_events_page').show();
             $("#schedule_event_table_body").empty();
             
-        } else if (classroom_name == 'Seleziona aula') {
-            alert ("Seleziona un'aula");
         } else if (ne_date < today) {
             alert('ERRORE: Non possono essere effettuate modifiche per la data selezionata.');
         }
@@ -310,6 +308,7 @@ $(function () {
                     var event_title;
                     var teacher_id;
                     var event_key;
+                    var classroom;
                     var second_column;
                     childSnap.forEach(gcSnap => {
                         
@@ -323,34 +322,38 @@ $(function () {
                             event_key = gcSnap.val();
                         } else if (gcSnap.key == 'teacher_key') {
                             teacher_id = gcSnap.val();
+                        } else if (gcSnap.key == 'classroom') {
+                            classroom = gcSnap.val();
                         }
-                    }); 
-
-                    if (event_title) {
-                        second_column = event_title;
-                    } else {
-                        second_column = class_name + ' ' + teacher_name;
-                    }
-
-                    $("#hid_"+hour).empty();
-                    $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
-                    user = firebase.auth().currentUser;
+                    });
                     
-                    
-                    $("#hid_"+hour).empty();
-                    $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
-                    
-                    if (event_title) {
-                        $("#hid_"+hour).addClass('event_prenotation');
-                        $("#hid_"+hour).val(event_key);              
-                    } else {
-                        user = firebase.auth().currentUser;
-                    
-                        if (user.uid == teacher_id){
-                            $("#hid_"+hour).addClass('mybook');
+                    if (classroom != 'Esterno') {
+                        if (event_title) {
+                            second_column = event_title;
                         } else {
-                            $("#hid_"+hour).addClass('booked');
-                            $("#hid_"+hour).removeClass('clickable-row');
+                            second_column = class_name + ' ' + teacher_name;
+                        }
+
+                        $("#hid_"+hour).empty();
+                        $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
+                        user = firebase.auth().currentUser;
+
+
+                        $("#hid_"+hour).empty();
+                        $("#hid_"+hour).append('<th>'+hour+':00</th><td>'+ second_column +'</td>');
+
+                        if (event_title) {
+                            $("#hid_"+hour).addClass('event_prenotation');
+                            $("#hid_"+hour).val(event_key);              
+                        } else {
+                            user = firebase.auth().currentUser;
+
+                            if (user.uid == teacher_id){
+                                $("#hid_"+hour).addClass('mybook');
+                            } else {
+                                $("#hid_"+hour).addClass('booked');
+                                $("#hid_"+hour).removeClass('clickable-row');
+                            }
                         }
                     }
                 });

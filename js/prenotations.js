@@ -1,5 +1,7 @@
-$(function () {
-    
+$(function () {    
+    /*
+        List the the event the selected class have joined
+    */
     $("#prenotation_btn").on('click', () => {
         $("#prenotations_list").empty();
         if ($("#select_prenotations").find(':selected').text() != "Seleziona classe") {

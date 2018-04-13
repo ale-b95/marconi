@@ -47,7 +47,7 @@ $(function () {
   });
 
 /*
-  called at every user state change (login / logout)
+  Called at every user state change (login / logout)
 */
   firebase.auth().onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
@@ -61,7 +61,7 @@ $(function () {
   });
 
 /*
-    creates a new user and updates its displayName
+    Creates a new user and updates its displayName
 */
   function registerNewUser() {
     const formSignup = $('#signup_form')[0];
@@ -72,12 +72,19 @@ $(function () {
     const txtPswdRep = $("#sUpPwdRep")[0];
 
     if (txtPswd.value == txtPswdRep.value) {
-      // Get email and password
+      /*
+        Get email and password
+      */
       var dispName = txtName.value + " " + txtSurname.value;
-      // Sign up
+      
+      /*
+            Signup
+      */    
       firebase.auth().createUserWithEmailAndPassword(txtEmailSignup.value, txtPswd.value)
       .then(() => {
-        // Set a displayName for the user
+        /*
+            Set a display name for the user
+        */
         firebase.auth().currentUser.updateProfile({
           displayName: dispName
         })
@@ -98,10 +105,10 @@ $(function () {
     }
   }
 
-/*
-  login with the user email and password, log into the default institute if
-  it is se
-  */
+    /*
+      login with the user email and password, log into the default institute if
+      it is se
+    */
   function userLogin() {
     const txtEmailLogin = $("#lInEmail")[0];
     const txtPwdLogin = $("#lInPwd")[0];
